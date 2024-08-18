@@ -4,16 +4,18 @@ from typing import Callable, List, Optional, Tuple, Type, Union
 
 from django.contrib.admin import ListFilter, ShowFacets, SimpleListFilter, widgets
 from django.contrib.admin.options import IS_FACETS_VAR, IS_POPUP_VAR
-from django.contrib.admin.templatetags.admin_list import result_headers, results
-from django.contrib.admin.utils import lookup_spawns_duplicates
+from django.contrib.admin.templatetags.admin_list import date_hierarchy, result_headers, results
+from django.contrib.admin.utils import get_fields_from_path, lookup_spawns_duplicates
 from django.contrib.admin.views.main import ALL_VAR, ORDER_VAR, PAGE_VAR, SEARCH_VAR, ChangeList
 from django.core.exceptions import FieldDoesNotExist
 from django.core.paginator import Paginator
 from django.db import models
 from django.db.models.constants import LOOKUP_SEP
+from django.db.models.functions.text import Substr, Upper
 from django.http import HttpRequest
 from django.utils.http import urlencode
 from django.utils.text import smart_split, unescape_string_literal
+from django.utils.translation import gettext as _
 
 from modersite.components.base import Component
 
@@ -275,9 +277,21 @@ class ModelListComponent(Component):
             may_have_duplicates |= any(lookup_spawns_duplicates(self.opts, search_spec) for search_spec in orm_lookups)
         return queryset, may_have_duplicates
 
-    def render(self, context):
-        """Render the component in a HTML template."""
+    def update_render_context(self, context):
+        """Update the context before rendering the component."""
         cl = self.get_change_list(context["request"])
+        context.update({"cl": cl, "opts": self.opts})
+        context.update(self.get_pagination_context(cl))
+        context.update(self.get_search_context(cl))
+        context.update(self.get_hierarchy_context(cl))
+
+    # noinspection PyMethodMayBeStatic
+    def get_empty_value_display(self):
+        """Return the value to display for an empty field."""
+        return "-"
+
+    def get_pagination_context(self, cl: ChangeList):
+        """Return the context for the pagination."""
         headers = list(result_headers(cl))
         num_sorted_fields = 0
         for h in headers:
@@ -286,9 +300,7 @@ class ModelListComponent(Component):
         pagination_required = (not cl.show_all or not cl.can_show_all) and cl.multi_page
         page_range = cl.paginator.get_elided_page_range(cl.page_num) if pagination_required else []
         need_show_all_link = cl.can_show_all and not cl.show_all and cl.multi_page
-        new_context = {
-            "cl": cl,
-            "opts": self.opts,
+        return {
             "pagination_required": pagination_required,
             "show_all_url": need_show_all_link and cl.get_query_string({self.all_var: ""}),
             "page_range": list(page_range),
@@ -297,14 +309,69 @@ class ModelListComponent(Component):
             "results": list(results(cl)),
             "result_headers": headers,
             "num_sorted_fields": num_sorted_fields,
+        }
+
+    def get_search_context(self, cl: ChangeList):
+        """Return the context for the search bar."""
+        return {
             "show_result_count": cl.result_count != cl.full_result_count,
-            "search_var": SEARCH_VAR,
+            "search_var": self.search_var,
             "is_popup_var": IS_POPUP_VAR,
             "is_facets_var": IS_FACETS_VAR,
         }
-        context.update(new_context)
-        return context.template.engine.get_template(self.template).render(context)
 
-    def get_empty_value_display(self):
-        """Return the value to display for an empty field."""
-        return "-"
+    # noinspection PyMethodMayBeStatic
+    def get_hierarchy_context(self, cl: ChangeList):
+        """Return the context for the hierarchy of results.
+
+        Currently only works for date fields.
+        """
+        # noinspection PyTestUnpassedFixture
+        field_name = cl.date_hierarchy
+        if not field_name:
+            return {"show_hierarchy": False}
+        field = get_fields_from_path(cl.model, field_name)[-1]
+        if isinstance(field, models.CharField) or isinstance(field, models.TextField):
+            hierarchy_data = first_letter_hierarchy(cl)
+        else:
+            hierarchy_data = date_hierarchy(cl)
+        if hierarchy_data is not None:
+            return {
+                "show_hierarchy": True,
+                "hierarchy_back": hierarchy_data["back"],
+                "hierarchy_choices": hierarchy_data["choices"],
+                "hierarchy_title": field.verbose_name,
+            }
+        return {"show_hierarchy": False}
+
+
+def first_letter_hierarchy(cl: ChangeList):
+    """Fetch all initials of a CharField."""
+    # noinspection PyTestUnpassedFixture
+    qs = (
+        cl.queryset.annotate(hierarchy_initial=Upper(Substr(cl.date_hierarchy, 1, 1)))
+        .values_list("hierarchy_initial", flat=True)
+        .distinct()
+    )
+    values = set(qs)
+    if not values:
+        return None
+    # noinspection PyTestUnpassedFixture
+    initial_field = f"{cl.date_hierarchy}__istartswith"
+    initial_value = cl.params.get(initial_field)
+    if initial_value:
+        cl.get_query_string(remove=[initial_field])
+        back = {"link": cl.get_query_string(remove=[initial_field]), "title": _("All")}
+    else:
+        back = None
+    return {
+        "show": True,
+        "back": back,
+        "choices": [
+            {
+                "title": initial,
+                "link": cl.get_query_string({initial_field: initial}) if initial != initial_value else None,
+            }
+            for initial in sorted(values)
+        ],
+    }

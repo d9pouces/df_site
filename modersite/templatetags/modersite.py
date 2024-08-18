@@ -1,15 +1,17 @@
 """Custom template tags for the modersite app."""
 
-from typing import Union
+from typing import Optional, Union
 
 from django import template
 from django.conf import settings
+from django.contrib.admin.views.main import PAGE_VAR
 from django.core.paginator import Paginator
 from django.template.base import kwarg_re
 from django.template.defaulttags import URLNode
 from django.template.exceptions import TemplateSyntaxError
 from django.utils.safestring import mark_safe
 
+from modersite.components.base import Component
 from modersite.constants import BRAND_ICONS, INT_RE
 
 register = template.Library()
@@ -110,3 +112,19 @@ def fa6_icon(
         color=f"text-{color}" if color else "",
     )
     return mark_safe(content)  # noqa
+
+
+@register.simple_tag(takes_context=True)
+def component(context, comp: Component):
+    """Render a HTML component in a template."""
+    text = comp.render(context)
+    return mark_safe(text)  # noqa S308
+
+
+@register.simple_tag
+def component_list_url(cl, page: Optional[int] = None):
+    """Generate an individual page index link in a paginated list."""
+    kwargs = {}
+    if page is not None:
+        kwargs[PAGE_VAR] = page
+    return cl.get_query_string(kwargs)

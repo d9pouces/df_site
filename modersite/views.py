@@ -83,6 +83,8 @@ class IndexView(TemplateView):
                 ("start_date", DateFieldListFilter),
                 ("end_date", DateFieldListFilter),
             ],
+            search_help_text="Search for a message",
+            date_hierarchy="message",
         )
         set_websocket_topics(self.request)
         return context
