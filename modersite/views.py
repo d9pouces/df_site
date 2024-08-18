@@ -13,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 from modersite.components.list import ModelListComponent
-from modersite.components.list_filters import BooleanFieldListFilter, ChoicesFieldListFilter
+from modersite.components.list_filters import BooleanFieldListFilter, ChoicesFieldListFilter, DateFieldListFilter
 from modersite.models import AlertRibbon
 
 logger = logging.getLogger(__name__)
@@ -80,6 +80,8 @@ class IndexView(TemplateView):
                 ("position", ChoicesFieldListFilter),
                 ("color", ChoicesFieldListFilter),
                 ("is_active", BooleanFieldListFilter),
+                ("start_date", DateFieldListFilter),
+                ("end_date", DateFieldListFilter),
             ],
         )
         set_websocket_topics(self.request)

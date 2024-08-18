@@ -3,6 +3,7 @@
 from typing import Callable, List, Optional, Tuple, Type, Union
 
 from django.contrib.admin import ListFilter, ShowFacets, SimpleListFilter, widgets
+from django.contrib.admin.options import IS_FACETS_VAR, IS_POPUP_VAR
 from django.contrib.admin.templatetags.admin_list import result_headers, results
 from django.contrib.admin.utils import lookup_spawns_duplicates
 from django.contrib.admin.views.main import ALL_VAR, ORDER_VAR, PAGE_VAR, SEARCH_VAR, ChangeList
@@ -287,6 +288,7 @@ class ModelListComponent(Component):
         need_show_all_link = cl.can_show_all and not cl.show_all and cl.multi_page
         new_context = {
             "cl": cl,
+            "opts": self.opts,
             "pagination_required": pagination_required,
             "show_all_url": need_show_all_link and cl.get_query_string({self.all_var: ""}),
             "page_range": list(page_range),
@@ -295,6 +297,10 @@ class ModelListComponent(Component):
             "results": list(results(cl)),
             "result_headers": headers,
             "num_sorted_fields": num_sorted_fields,
+            "show_result_count": cl.result_count != cl.full_result_count,
+            "search_var": SEARCH_VAR,
+            "is_popup_var": IS_POPUP_VAR,
+            "is_facets_var": IS_FACETS_VAR,
         }
         context.update(new_context)
         return context.template.engine.get_template(self.template).render(context)

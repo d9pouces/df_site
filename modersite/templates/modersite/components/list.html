@@ -1,4 +1,7 @@
-<div class="row">{% load i18n django_bootstrap5 nonadmin modersite %}
+<div class="row">{% load i18n django_bootstrap5 nonadmin modersite admin_list %}
+    {% block list_search %}{% include "modersite/components/list_search_form.html" %}{% endblock list_search %}
+    {% block date_hierarchy %}{% if cl.date_hierarchy %}{% date_hierarchy cl %}{% endif %}{% endblock %}
+
     {% block list_table %}
         {% if results %}
             <div class="results {% if cl.has_filters %}col-md-8{% else %}col-md-12{% endif %} col-sm-12">
