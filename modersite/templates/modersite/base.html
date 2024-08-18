@@ -1,5 +1,5 @@
 {% load static pipeline_sri  modersite i18n django_bootstrap5 cookie_consent_tags %}<!doctype html>
-<html lang="{{ LANGUAGE_CODE }}" {% if DF_COLOR_THEMES %}data-bs-theme="{{ COLOR_THEME|default:'auto' }}"
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" dir="{{ LANGUAGE_BIDI|yesno:'rtl,ltr,auto' }}" {% if DF_COLOR_THEMES %}data-bs-theme="{{ COLOR_THEME|default:'auto' }}"
       data-df-dark-theme="{{ DF_COLOR_THEMES.2.0 }}" data-df-light-theme="{{ DF_COLOR_THEMES.1.0 }}"{% endif %}>
 <head>
     {% block head_meta_global %}
@@ -51,7 +51,7 @@
     {% block media_local %}
     {% endblock media_local %}
 </head>
-<body class="{% block body_classes %}{% endblock %}">
+<body class="{% block body_classes %}{% endblock %}" data-admin-utc-offset="{% now "Z" %}">
 {% block navbar %}
     <nav class="navbar navbar-expand-lg sticky-top bg-primary">
         <div class="container">

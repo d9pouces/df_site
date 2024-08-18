@@ -22209,3 +22209,7 @@ readers do not read off random characters that represent icons */
 .va-10 {
   height: 20em;
 }
+
+.visible-hover:hover {
+  visibility: visible !important;
+}

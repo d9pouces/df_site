@@ -1,3 +1,14 @@
 {% extends 'modersite/app.html' %}
-{% load static pipeline_sri websockets modersite %}<!doctype html>
+{% load static pipeline_sri websockets modersite nonadmin %}<!doctype html>
+
+
+{% block body_content %}
+    <div class="alert alert-dark alert-dismissible fade show" role="alert">
+        <strong>Holy guacamole!</strong> You should check in on some of those fields below.
+        <button type="button" class="btn-close" {% js_call "html.remove" on="click" selector="[role=alert]" %}
+                aria-label="Close"></button>
+    </div>
+
+    {% component ribbon_list %}
+{% endblock body_content %}
 

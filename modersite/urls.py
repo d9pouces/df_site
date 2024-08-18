@@ -4,12 +4,8 @@ from django.urls import include, path
 from django.utils.module_loading import import_string
 
 import settings
-from modersite.adminactions.ribbons import RibbonView
-from modersite.models import AlertRibbon
-from modersite.nonadmin.sites import site
 from modersite.views import BrowserConfigView, DemoView, PopupDemoView, csp_report_view, site_webmanifest_view
 
-site.register(AlertRibbon, RibbonView)
 urlpatterns = [
     path("site.webmanifest", site_webmanifest_view, name="site_webmanifest"),
     path("browserconfig.xml", BrowserConfigView.as_view(), name="browserconfig"),
@@ -24,5 +20,4 @@ urlpatterns = [
     ),
     path("demo/", DemoView.as_view(), name="demo"),
     path("popup-demo/", PopupDemoView.as_view(), name="popup-demo"),
-    path("views/", include(site.urls[:2])),
 ]

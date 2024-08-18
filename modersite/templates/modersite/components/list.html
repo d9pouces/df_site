@@ -1,0 +1,36 @@
+<div class="row">{% load i18n django_bootstrap5 nonadmin modersite %}
+    {% block list_table %}
+        {% if results %}
+            <div class="results {% if cl.has_filters %}col-md-8{% else %}col-md-12{% endif %} col-sm-12">
+                {% block list_pagination_top %}
+                    {% if cl.model_admin.pagination_on_top %}
+                        {% include "modersite/components/list_pagination.html" %}
+                    {% endif %}
+                {% endblock list_pagination_top %}
+                {% include "modersite/components/list_table.html" %}
+                {% block list_pagination_bottom %}
+                    {% if cl.model_admin.pagination_on_bottom %}
+                        {% include "modersite/components/list_pagination.html" %}
+                    {% endif %}
+                {% endblock list_pagination_bottom %}
+            </div>
+        {% else %}
+            <div class="results {% if cl.has_filters %}col-md-8{% else %}col-md-12{% endif %} col-sm-12">
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled"><span class="page-link">0 {{ cl.opts.verbose_name }}</span>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        {% endif %}
+        {% if cl.has_filters %}
+            <div class="filters col-md-4 col-sm-12">
+                {% block list_filters %}
+                    {% include "modersite/components/list_filters.html" %}
+                {% endblock list_filters %}
+            </div>
+        {% endif %}
+    {% endblock list_table %}
+
+</div>

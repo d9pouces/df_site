@@ -12,6 +12,10 @@ from django.utils.safestring import mark_safe
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
+from modersite.components.list import ModelListComponent
+from modersite.components.list_filters import BooleanFieldListFilter, ChoicesFieldListFilter
+from modersite.models import AlertRibbon
+
 logger = logging.getLogger(__name__)
 
 
@@ -66,6 +70,18 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         """Get the context data for the view."""
         context = super().get_context_data(**kwargs)
+        context["ribbon_list"] = ModelListComponent(
+            model=AlertRibbon,
+            list_per_page=1,
+            search_fields=["message"],
+            list_display=["message", "position", "color", "url", "is_active"],
+            sortable_by=["position", "color", "start_date", "end_date", "is_active"],
+            list_filter=[
+                ("position", ChoicesFieldListFilter),
+                ("color", ChoicesFieldListFilter),
+                ("is_active", BooleanFieldListFilter),
+            ],
+        )
         set_websocket_topics(self.request)
         return context
 

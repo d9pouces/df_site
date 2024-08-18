@@ -18,8 +18,6 @@
                    href="{{ pm_url }}">{% trans "Messaging" %}</a>
                 <a class="list-group-item list-group-item-action {% if url_name == 'settings' %}active{% endif %}"
                    href="{{ settings_url }}">{% trans "Settings" %}</a>
-                <a class="list-group-item list-group-item-action {% if url_name == 'views' %}active{% endif %}"
-                   href="{% url 'views:modersite_alertribbon_changelist' %}">{% trans "Administration" %}</a>
                 {% if email_url %}
                     <a class="list-group-item list-group-item-action {% if url_name == 'account_email' %}active{% endif %}"
                        href="{{ email_url }}">{% trans "Change Email" %}</a>

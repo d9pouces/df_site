@@ -1,0 +1,26 @@
+{% load i18n admin_list modersite %}
+{% if cl.has_filters %}
+    <div class="card">
+        <h2 class="card-header">{% translate 'Filter' %}</h2>
+        {% if cl.is_facets_optional or cl.has_active_filters %}
+            <div class="card-body">
+                {% if cl.is_facets_optional %}
+                    <span>
+                    {% if cl.add_facets %}
+                        <a href="{{ cl.remove_facet_link }}"
+                           class="hidelink">{% fa6_icon 'eye-slash' %} {% translate "Hide counts" %}</a>
+                    {% else %}
+                        <a href="{{ cl.add_facet_link }}"
+                           class="viewlink">{% fa6_icon 'eye' %} {% translate "Show counts" %}</a>{% endif %}
+                </span>
+                {% endif %}
+                {% if cl.has_active_filters %}
+                    <span>
+                        <a href="{{ cl.clear_all_filters_qs }}">{% fa6_icon 'times' %} {% translate "Clear all filters" %}</a>
+                    </span>
+                {% endif %}
+            </div>
+        {% endif %}
+        {% for spec in cl.filter_specs %}{% admin_list_filter cl spec %}{% endfor %}
+    </div>
+{% endif %}

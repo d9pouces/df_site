@@ -42,12 +42,3 @@
         </div>
     </form>
 {% endblock navbar_search_form %}
-
-
-{% block body_content %}
-    <div class="alert alert-dark alert-dismissible fade show" role="alert">
-        <strong>Holy guacamole!</strong> You should check in on some of those fields below.
-        <button type="button" class="btn-close" {% js_call "html.remove" on="click" selector="[role=alert]" %}
-                aria-label="Close"></button>
-    </div>
-{% endblock body_content %}
