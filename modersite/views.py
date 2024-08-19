@@ -86,7 +86,7 @@ class IndexView(TemplateView):
             ],
             search_help_text=None,
             date_hierarchy="message",
-            filters_on_right=False,
+            filters_on_right=True,
             filters_title=_("Filters"),
         )
         set_websocket_topics(self.request)

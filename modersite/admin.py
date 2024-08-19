@@ -15,7 +15,6 @@ class AlertRibbonAdmin(admin.ModelAdmin):
     list_filter = ("color", "start_date", "end_date", "is_active", "position")
     search_fields = ("summary",)
     fields = ["summary", "url", "message", "color", "start_date", "end_date", "is_active", "position"]
-    list_per_page = 1
 
 
 @admin.register(PreferencesUser)
