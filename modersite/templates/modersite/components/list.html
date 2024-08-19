@@ -3,6 +3,11 @@
     {% block date_hierarchy %}{% include 'modersite/components/list_hierarchy.html' %}{% endblock %}
 
     {% block list_table %}
+        {% if cl.has_filters and not cl.model_admin.filters_on_right %}
+            <div class="filters col-md-4 col-sm-12">
+                {% include "modersite/components/list_filters.html" %}
+            </div>
+        {% endif %}
         {% if results %}
             <div class="results {% if cl.has_filters %}col-md-8{% else %}col-md-12{% endif %} col-sm-12">
                 {% block list_pagination_top %}
@@ -27,11 +32,9 @@
                 </nav>
             </div>
         {% endif %}
-        {% if cl.has_filters %}
+        {% if cl.model_admin.filters_on_right and cl.has_filters %}
             <div class="filters col-md-4 col-sm-12">
-                {% block list_filters %}
-                    {% include "modersite/components/list_filters.html" %}
-                {% endblock list_filters %}
+                {% include "modersite/components/list_filters.html" %}
             </div>
         {% endif %}
     {% endblock list_table %}

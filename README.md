@@ -40,7 +40,7 @@ https://www.saaspegasus.com/guides/modern-javascript-for-django-developers/clien
 - [X] [Python3.12](https://www.python.org/)
 - [X] [DjangoCookieConsent](https://django-cookie-consent.readthedocs.io/en/latest/)
 - [X] [Django-postman](https://django-postman.readthedocs.io/en/latest/)
-- [ ] [Django-allauth](https://docs.allauth.org/en/latest/)
+- [X] [Django-allauth](https://docs.allauth.org/en/latest/)
 - [ ] [Django Rest Framework](https://www.django-rest-framework.org/)
 - [ ] [Django Channels](https://channels.readthedocs.io/en/stable/)
 - [ ] [Gunicorn](https://gunicorn.org/)
@@ -51,7 +51,8 @@ https://www.saaspegasus.com/guides/modern-javascript-for-django-developers/clien
 - [ ] [Django-components](https://django-components.readthedocs.io/en/latest/)
 - [ ] [django-ckeditor](https://django-ckeditor.readthedocs.io/en/latest/)
 - [ ] [Django-recaptcha](https://pypi.org/project/django-recaptcha/)
-- [ ] Complete solution for ListView, DetailView, CreateView, UpdateView, DeleteView
+- [ ] Complete solution for ListView,
+- [ ] Complete solution for DetailView, CreateView, UpdateView, DeleteView
 - [ ] alert messages when the site is offline (maintenance mode)
 - [ ] wait for the database to be ready
 - [ ] display global messages and banners
@@ -107,7 +108,7 @@ HTML Checker, CSS Validator, Link Checker, JS Validator
 - [ ] Copyright checking
 - [ ] Monitoring and alerting
 - [ ] [django-probes](https://github.com/painless-software/django-probes)
--
+
 
 ## Code analysis and formatting
 

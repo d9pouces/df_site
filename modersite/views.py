@@ -9,6 +9,7 @@ from django.contrib import messages
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.templatetags.static import static
 from django.utils.safestring import mark_safe
+from django.utils.translation import gettext as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
@@ -83,8 +84,10 @@ class IndexView(TemplateView):
                 ("start_date", DateFieldListFilter),
                 ("end_date", DateFieldListFilter),
             ],
-            search_help_text="Search for a message",
+            search_help_text=None,
             date_hierarchy="message",
+            filters_on_right=False,
+            filters_title=_("Filters"),
         )
         set_websocket_topics(self.request)
         return context

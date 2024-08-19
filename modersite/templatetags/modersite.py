@@ -1,6 +1,8 @@
 """Custom template tags for the modersite app."""
 
-from typing import Optional, Union
+import re
+from html import escape
+from typing import Dict, List, Optional, Union
 
 from django import template
 from django.conf import settings
@@ -9,6 +11,7 @@ from django.core.paginator import Paginator
 from django.template.base import kwarg_re
 from django.template.defaulttags import URLNode
 from django.template.exceptions import TemplateSyntaxError
+from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 
 from modersite.components.base import Component
@@ -114,6 +117,51 @@ def fa6_icon(
     return mark_safe(content)  # noqa
 
 
+@register.simple_tag
+def bootstrap_breadcrumb(
+    breadcrumbs: List[Dict[str, Union[str, bool]]], last_active: bool = True, extra_classes: str = ""
+):
+    """Render an breadcrumb.
+
+    **Tag name**::
+
+        bootstrap_breadcrumb
+
+    **Parameters**::
+
+        breadcrumbs
+            List of dictionaries with the following keys:
+                `link`: URL to link to
+                `title`: Text to display
+                `active`: boolean, element is active, meaning that the link is not displayed
+
+        last_active
+            boolean, last element is the active one
+
+            :default: ``True``
+
+        extra_classes
+            string, extra CSS classes for elements
+
+            :default: ""
+
+    **Usage**::
+
+        {% bootstrap_breadcrumb [{content}] %}
+
+    **Example**::
+
+        {% bootstrap_breadcrumb crumbs %}
+    """
+    context = {
+        "breadcrumbs": breadcrumbs,
+        "last_active": last_active,
+        "extra_classes": extra_classes,
+    }
+    content = render_to_string("django_bootstrap5/breadcrumb.html", context)
+    return mark_safe(content)  # noqa S308
+
+
 @register.simple_tag(takes_context=True)
 def component(context, comp: Component):
     """Render a HTML component in a template."""
@@ -128,3 +176,23 @@ def component_list_url(cl, page: Optional[int] = None):
     if page is not None:
         kwargs[PAGE_VAR] = page
     return cl.get_query_string(kwargs)
+
+
+auto_pill_re = re.compile(r"^(.*)\((\d+)\)\s*$")
+
+
+@register.simple_tag
+def component_auto_badge(
+    value: str, color: str = "primary", extra_class: str = "rounded-pill", regex: re.Pattern = auto_pill_re
+):
+    """Automatically extracts suffixes between parenthesis `(.*)` and put them into badges."""
+    if hasattr(value, "__html__"):
+        raw_value = str(value)
+    else:
+        raw_value = escape(str(value))
+    if match := regex.match(raw_value):
+        prefix = match.group(1)
+        suffix = match.group(2)
+        new_value = f'{prefix}<span class="badge text-bg-{color} {extra_class}">{suffix}</span>'
+        value = mark_safe(new_value)  # noqa S308
+    return value

@@ -2,7 +2,7 @@
 {% if cl.search_fields %}
     {% if cl.search_help_text %}
         <div class="col-md-12 ">
-            <div class="alert alert-secondary">
+            <div class="alert alert-secondary" id="{{ cl.model_admin.id_prefix }}_helptext">
                 {{ cl.search_help_text }}
             </div>
         </div>
@@ -13,7 +13,7 @@
                 <input type="text" class="form-control"
                        name="{{ search_var }}" value="{{ cl.query }}"
                        placeholder="{% trans 'Search' %}"
-                       aria-label="{% trans 'Search' %}" {% if cl.search_help_text %} aria-describedby="searchbar_helptext"{% endif %}>
+                       aria-label="{% trans 'Search' %}" {% if cl.search_help_text %} aria-describedby="{{ cl.model_admin.id_prefix }}_helptext"{% endif %}>
                 <button type="submit" class="btn btn-primary">{% fa6_icon 'search' %}</button>
                 {% if show_result_count %}
                 <span class="input-group-text">{% blocktranslate count counter=cl.result_count %}{{ counter }} result{% plural %}{{ counter }} results{% endblocktranslate %}</span>

@@ -42,8 +42,6 @@ class ModelListComponent(Component):
     order_var = ORDER_VAR
     search_var = SEARCH_VAR
     list_editable: List[str] = []
-    pagination_on_top = True
-    pagination_on_bottom = True
 
     def __init__(
         self,
@@ -58,10 +56,14 @@ class ModelListComponent(Component):
         list_per_page: int = 20,
         list_max_show_all: int = 200,
         sortable_by: List[str] = None,
-        search_help_text: str = "",
+        search_help_text: Optional[str] = None,
         show_facets: ShowFacets = ShowFacets.ALLOW,
         show_full_result_count: bool = True,
         ordering: List[str] = None,
+        pagination_on_top: bool = True,
+        pagination_on_bottom: bool = True,
+        filters_on_right: bool = True,
+        filters_title: str = _("Filters"),
     ):
         """Create a new list component."""
         super().__init__()
@@ -77,10 +79,19 @@ class ModelListComponent(Component):
         self.list_per_page: int = list_per_page
         self.list_max_show_all: int = list_max_show_all
         self.sortable_by: List[str] = sortable_by or []
-        self.search_help_text: str = search_help_text
+        self.search_help_text: Optional[str] = search_help_text
         self.show_facets: ShowFacets = show_facets
         self.show_full_result_count: bool = show_full_result_count
         self.ordering: List[str] = ordering or []
+        self.pagination_on_top: bool = pagination_on_top
+        self.pagination_on_bottom: bool = pagination_on_bottom
+        self.filters_on_right: bool = filters_on_right
+        self.filters_title: str = filters_title
+
+    @property
+    def id_prefix(self) -> str:
+        """Propose a prefix for the HTML IDs linked to this component."""
+        return f"{self.opts.app_label}_{self.opts.model_name}"
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def get_change_list_class(self, request: HttpRequest) -> Type[ChangeList]:
