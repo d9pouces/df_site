@@ -5,7 +5,7 @@ from typing import List, Tuple
 from df_config.config.dynamic_settings import SettingReference
 from django.utils.translation import gettext_lazy as _
 
-DF_INDEX_VIEW = "modersite.views.IndexView"
+DF_INDEX_VIEW = "demo.views.IndexView"
 DF_SITE_TITLE = "Technological proof of concept"
 DF_SITE_DESCRIPTION = "This is a technological proof of concept."
 DF_SITE_KEYWORDS = ["Django", "Bootstrap", "WebSockets", "HTMX", "Django Channels"]
@@ -16,6 +16,7 @@ DF_SITE_SOCIAL_NETWORKS = {
     "twitter": "https://x.com/d9pouces/",
     "github": "https://github.com/d9pouces/",
 }
+
 DF_SITE_THEMES: List[Tuple[str, str, str]] = [  # ('theme name', 'theme label', 'icon name')
     ("auto", _("Auto"), "toggle-on"),
     ("light", _("Light"), "sun"),
@@ -25,11 +26,8 @@ DF_ANDROID_THEME_COLOR = "#ffffff"
 DF_ANDROID_BACKGROUND_COLOR = "#ffffff"
 DF_MICROSOFT_BACKGROUND_COLOR = "#da532c"
 CSP_IMG_SRC = ["'self'", "data: w3.org/svg/2000"]
-CSP_STYLE_SRC = [
-    "'self'",
-    "https://fonts.googleapis.com",
-]
-CSP_FONT_SRC = ["'self'", "https://fonts.gstatic.com"]
+CSP_STYLE_SRC = ["'self'"]
+CSP_FONT_SRC = ["'self'"]
 CSP_DEFAULT_SRC = ["'none'"]
 CSP_SCRIPT_SRC = ["'self'"]
 CSP_OBJECT_SRC = ["'self'"]
@@ -48,6 +46,7 @@ DF_TEMPLATE_CONTEXT_PROCESSORS = [
     "django.template.context_processors.request",
 ]
 DF_INSTALLED_APPS = [
+    "demo",
     "django_bootstrap5",
     "modersite.app.ModersiteApp",
     "cookie_consent",

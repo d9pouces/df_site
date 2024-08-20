@@ -4,7 +4,8 @@ from django.urls import include, path
 from django.utils.module_loading import import_string
 
 import settings
-from modersite.views import BrowserConfigView, DemoView, PopupDemoView, csp_report_view, site_webmanifest_view
+from demo.urls import urlpatterns as demo_urlpatterns
+from modersite.views import BrowserConfigView, csp_report_view, site_webmanifest_view
 
 urlpatterns = [
     path("site.webmanifest", site_webmanifest_view, name="site_webmanifest"),
@@ -18,6 +19,4 @@ urlpatterns = [
         import_string(settings.CK_EDITOR_5_UPLOAD_FILE_VIEW),
         name=settings.CK_EDITOR_5_UPLOAD_FILE_VIEW_NAME,
     ),
-    path("demo/", DemoView.as_view(), name="demo"),
-    path("popup-demo/", PopupDemoView.as_view(), name="popup-demo"),
-]
+] + demo_urlpatterns

@@ -18,7 +18,7 @@ from django.utils.http import urlencode
 from django.utils.text import smart_split, unescape_string_literal
 from django.utils.translation import gettext as _
 
-from modersite.components.base import Component
+from modersite.components.base import ModelComponent
 
 
 class ModelListChangeList(ChangeList):
@@ -34,7 +34,7 @@ class ModelListChangeList(ChangeList):
         return f"/{self.opts.app_label}/{self.opts.model_name}/{result.pk}/show/"
 
 
-class ModelListComponent(Component):
+class ModelListComponent(ModelComponent):
     """A component that can display a list as table, with filters and a search bar."""
 
     page_var = PAGE_VAR
@@ -66,10 +66,7 @@ class ModelListComponent(Component):
         filters_title: str = _("Filters"),
     ):
         """Create a new list component."""
-        super().__init__()
-        self.model: Type[models.Model] = model
-        self.opts = model._meta
-        self.template: str = template
+        super().__init__(model, template)
         self.list_select_related: Optional[List[str]] = list_select_related
         self.list_display: List[str] = list_display or ["__str__"]
         self.list_display_links: List[str] = list_display_links or []
@@ -87,11 +84,6 @@ class ModelListComponent(Component):
         self.pagination_on_bottom: bool = pagination_on_bottom
         self.filters_on_right: bool = filters_on_right
         self.filters_title: str = filters_title
-
-    @property
-    def id_prefix(self) -> str:
-        """Propose a prefix for the HTML IDs linked to this component."""
-        return f"{self.opts.app_label}_{self.opts.model_name}"
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def get_change_list_class(self, request: HttpRequest, **kwargs) -> Type[ChangeList]:
@@ -127,15 +119,6 @@ class ModelListComponent(Component):
         elif self.list_select_related:
             qs = qs.select_related(*self.list_select_related)
         return qs
-
-    # noinspection PyUnusedLocal
-    def get_base_queryset(self, request: HttpRequest, **kwargs) -> models.QuerySet:
-        """Return the base queryset to use for this component.
-
-        Any extra filter based on kwargs should be applied here.
-        """
-        # noinspection PyProtectedMember
-        return self.model._default_manager.get_queryset()
 
     # noinspection PyMethodMayBeStatic
     def get_preserved_filters(self, request: HttpRequest):
@@ -308,11 +291,6 @@ class ModelListComponent(Component):
         context.update(self.get_pagination_context(request, cl, **kwargs))
         context.update(self.get_search_context(request, cl, **kwargs))
         context.update(self.get_hierarchy_context(request, cl, **kwargs))
-
-    # noinspection PyMethodMayBeStatic
-    def get_empty_value_display(self):
-        """Return the value to display for an empty field."""
-        return "-"
 
     # noinspection PyUnusedLocal
     def get_pagination_context(self, request: HttpRequest, cl: ChangeList, **kwargs):

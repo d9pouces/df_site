@@ -3,6 +3,7 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 
@@ -56,6 +57,10 @@ class AlertRibbon(models.Model):
     def __str__(self):
         """Return the string representation of the alert message."""
         return self.message
+
+    def get_absolute_url(self):
+        """Return the URL for the alert message."""
+        return reverse("ribbon", kwargs={"pk": self.pk})
 
     @property
     def html_tag(self):

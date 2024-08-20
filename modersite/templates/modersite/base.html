@@ -39,8 +39,8 @@
         <meta name="description" content="{{ PAGE_DESCRIPTION|default:DF_SITE_DESCRIPTION }}">
         <meta property="og:image" content="
             {% if PAGE_IMAGE_URL %}{{ PAGE_IMAGE_URL }}{% else %}{% static 'favicon/favicon.ico' %}{% endif %}"/>
-        <link rel="canonical" href="{{ PAGE_URL|default:request.path }}"/>
-        <meta property="og:url" content="{{ PAGE_URL|default:request.path }}"/>
+        <link rel="canonical" href="{{ PAGE_URL|default:request.path|abs_url }}"/>
+        <meta property="og:url" content="{{ PAGE_URL|default:request.path|abs_url }}"/>
     {% endblock head_meta_local %}
     {% block media_global %}
         {% sri_stylesheet "base" %}
@@ -62,7 +62,7 @@
                     data-bs-target="#navbar-content" aria-controls="navbar-content"
                     aria-expanded="false"
                     aria-label="{% trans 'Toggle navigation' %}">
-                <span class="navbar-toggler-icon"></span>
+                {% fa6_icon 'bars' large=True %}
             </button>
 
             <div class="collapse navbar-collapse" id="navbar-content">
@@ -154,21 +154,7 @@
         </div>
 
         {% block body_modal %}
-            <div id="source-modal" class="modal fade" tabindex="-1">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="modal-title">Source Code</h4>
-                            <button type="button" class="btn btn-primary btn-copy"><i class="bi bi-clipboard"></i> Copy
-                                Code
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <pre class="language-html"><code></code></pre>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div id="modersite-modal" class="modal fade" tabindex="-1"></div>
         {% endblock body_modal %}
 
         {% block body_footer %}
