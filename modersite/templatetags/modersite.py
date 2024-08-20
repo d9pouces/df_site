@@ -163,9 +163,9 @@ def bootstrap_breadcrumb(
 
 
 @register.simple_tag(takes_context=True)
-def component(context, comp: Component):
+def component(context, comp: Component, **kwargs):
     """Render a HTML component in a template."""
-    text = comp.render(context)
+    text = comp.render(context, **kwargs)
     return mark_safe(text)  # noqa S308
 
 

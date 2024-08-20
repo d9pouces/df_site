@@ -63,6 +63,26 @@ class BrowserConfigView(TemplateView):
     content_type = "application/xml"
 
 
+ribbons_list = ModelListComponent(
+    model=AlertRibbon,
+    list_per_page=1,
+    search_fields=["message"],
+    list_display=["message", "position", "color", "url", "is_active"],
+    sortable_by=["position", "color", "start_date", "end_date", "is_active"],
+    list_filter=[
+        ("position", ChoicesFieldListFilter),
+        ("color", ChoicesFieldListFilter),
+        ("is_active", BooleanFieldListFilter),
+        ("start_date", DateFieldListFilter),
+        ("end_date", DateFieldListFilter),
+    ],
+    search_help_text=None,
+    date_hierarchy="message",
+    filters_on_right=True,
+    filters_title=_("Filters"),
+)
+
+
 class IndexView(TemplateView):
     """Default index view."""
 
@@ -71,24 +91,7 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs):
         """Get the context data for the view."""
         context = super().get_context_data(**kwargs)
-        context["ribbon_list"] = ModelListComponent(
-            model=AlertRibbon,
-            list_per_page=1,
-            search_fields=["message"],
-            list_display=["message", "position", "color", "url", "is_active"],
-            sortable_by=["position", "color", "start_date", "end_date", "is_active"],
-            list_filter=[
-                ("position", ChoicesFieldListFilter),
-                ("color", ChoicesFieldListFilter),
-                ("is_active", BooleanFieldListFilter),
-                ("start_date", DateFieldListFilter),
-                ("end_date", DateFieldListFilter),
-            ],
-            search_help_text=None,
-            date_hierarchy="message",
-            filters_on_right=True,
-            filters_title=_("Filters"),
-        )
+        context["ribbons_list"] = ribbons_list
         set_websocket_topics(self.request)
         return context
 

@@ -4,7 +4,8 @@ from typing import Callable, List, Optional, Tuple, Type, Union
 
 from django.contrib.admin import ListFilter, ShowFacets, SimpleListFilter, widgets
 from django.contrib.admin.options import IS_FACETS_VAR, IS_POPUP_VAR
-from django.contrib.admin.templatetags.admin_list import date_hierarchy, result_headers, results
+from django.contrib.admin.templatetags.admin_list import date_hierarchy as raw_date_hierarchy
+from django.contrib.admin.templatetags.admin_list import result_headers, results
 from django.contrib.admin.utils import get_fields_from_path, lookup_spawns_duplicates
 from django.contrib.admin.views.main import ALL_VAR, ORDER_VAR, PAGE_VAR, SEARCH_VAR, ChangeList
 from django.core.exceptions import FieldDoesNotExist
@@ -36,7 +37,6 @@ class ModelListChangeList(ChangeList):
 class ModelListComponent(Component):
     """A component that can display a list as table, with filters and a search bar."""
 
-    template: str = "components/list.html"
     page_var = PAGE_VAR
     all_var = ALL_VAR
     order_var = ORDER_VAR
@@ -94,13 +94,14 @@ class ModelListComponent(Component):
         return f"{self.opts.app_label}_{self.opts.model_name}"
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def get_change_list_class(self, request: HttpRequest) -> Type[ChangeList]:
+    def get_change_list_class(self, request: HttpRequest, **kwargs) -> Type[ChangeList]:
         """Return the ChangeList class to use for this component."""
         return ModelListChangeList
 
-    def get_change_list(self, request: HttpRequest) -> ChangeList:
+    # noinspection PyUnusedLocal
+    def get_change_list(self, request: HttpRequest, **kwargs) -> ChangeList:
         """Return the ChangeList instance to use for this component."""
-        cls = self.get_change_list_class(request)
+        cls = self.get_change_list_class(request, **kwargs)
         return cls(
             request,
             self.model,
@@ -113,22 +114,33 @@ class ModelListComponent(Component):
             self.list_per_page,
             self.list_max_show_all,
             self.list_editable,
-            self,
+            ModelAdminWrapper(self, kwargs),
             self.sortable_by,
             self.search_help_text,
         )
 
-    # noinspection PyUnusedLocal
-    def get_queryset(self, request: HttpRequest) -> models.QuerySet:
+    def get_queryset(self, request: HttpRequest, **kwargs) -> models.QuerySet:
         """Return the queryset to use for this component."""
-        qs = self.model.objects.all()
-        if self.list_select_related:
+        qs = self.get_base_queryset(request, **kwargs)
+        if self.list_select_related is True:
+            qs = qs.select_related()
+        elif self.list_select_related:
             qs = qs.select_related(*self.list_select_related)
         return qs
+
+    # noinspection PyUnusedLocal
+    def get_base_queryset(self, request: HttpRequest, **kwargs) -> models.QuerySet:
+        """Return the base queryset to use for this component.
+
+        Any extra filter based on kwargs should be applied here.
+        """
+        # noinspection PyProtectedMember
+        return self.model._default_manager.get_queryset()
 
     # noinspection PyMethodMayBeStatic
     def get_preserved_filters(self, request: HttpRequest):
         """Return the preserved filters querystring."""
+        # noinspection PyArgumentList
         preserved_filters = request.GET.urlencode()
         if preserved_filters:
             return urlencode({"_changelist_filters": preserved_filters})
@@ -210,7 +222,7 @@ class ModelListComponent(Component):
         }.isdisjoint(valid_lookups)
 
     # noinspection PyUnusedLocal
-    def get_list_filter(self, request):
+    def get_list_filter(self, request, **kwargs):
         """Return a sequence containing the fields to be displayed as filters."""
         return self.list_filter
 
@@ -220,7 +232,7 @@ class ModelListComponent(Component):
         return Paginator(queryset, per_page, orphans, allow_empty_first_page)
 
     # noinspection PyUnusedLocal
-    def get_ordering(self, request: HttpRequest):
+    def get_ordering(self, request: HttpRequest, **kwargs):
         """Return the ordering to use for this component."""
         return self.ordering or ()
 
@@ -288,20 +300,22 @@ class ModelListComponent(Component):
             may_have_duplicates |= any(lookup_spawns_duplicates(self.opts, search_spec) for search_spec in orm_lookups)
         return queryset, may_have_duplicates
 
-    def update_render_context(self, context):
+    def update_render_context(self, context, **kwargs):
         """Update the context before rendering the component."""
-        cl = self.get_change_list(context["request"])
+        request = context["request"]
+        cl = self.get_change_list(request, **kwargs)
         context.update({"cl": cl, "opts": self.opts})
-        context.update(self.get_pagination_context(cl))
-        context.update(self.get_search_context(cl))
-        context.update(self.get_hierarchy_context(cl))
+        context.update(self.get_pagination_context(request, cl, **kwargs))
+        context.update(self.get_search_context(request, cl, **kwargs))
+        context.update(self.get_hierarchy_context(request, cl, **kwargs))
 
     # noinspection PyMethodMayBeStatic
     def get_empty_value_display(self):
         """Return the value to display for an empty field."""
         return "-"
 
-    def get_pagination_context(self, cl: ChangeList):
+    # noinspection PyUnusedLocal
+    def get_pagination_context(self, request: HttpRequest, cl: ChangeList, **kwargs):
         """Return the context for the pagination."""
         headers = list(result_headers(cl))
         num_sorted_fields = 0
@@ -322,7 +336,8 @@ class ModelListComponent(Component):
             "num_sorted_fields": num_sorted_fields,
         }
 
-    def get_search_context(self, cl: ChangeList):
+    # noinspection PyUnusedLocal
+    def get_search_context(self, request: HttpRequest, cl: ChangeList, **kwargs):
         """Return the context for the search bar."""
         return {
             "show_result_count": cl.result_count != cl.full_result_count,
@@ -331,8 +346,8 @@ class ModelListComponent(Component):
             "is_facets_var": IS_FACETS_VAR,
         }
 
-    # noinspection PyMethodMayBeStatic
-    def get_hierarchy_context(self, cl: ChangeList):
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
+    def get_hierarchy_context(self, request: HttpRequest, cl: ChangeList, **kwargs):
         """Return the context for the hierarchy of results.
 
         Currently only works for date fields.
@@ -345,7 +360,7 @@ class ModelListComponent(Component):
         if isinstance(field, models.CharField) or isinstance(field, models.TextField):
             hierarchy_data = first_letter_hierarchy(cl)
         else:
-            hierarchy_data = date_hierarchy(cl)
+            hierarchy_data = raw_date_hierarchy(cl)
         if hierarchy_data is not None:
             return {
                 "show_hierarchy": True,
@@ -354,6 +369,36 @@ class ModelListComponent(Component):
                 "hierarchy_title": field.verbose_name,
             }
         return {"show_hierarchy": False}
+
+
+class ModelAdminWrapper:
+    """Wrapper around a ModelListComponent to mimic a ModelAdmin.
+
+    This wrapper allows to add kwargs to the get_queryset method.
+    ChangeList expects a ModelAdmin instance but calls the get_queryset method with
+    only request arg, so we need to wrap the ModelListComponent.
+    """
+
+    def __init__(self, model_admin: ModelListComponent, kwargs):
+        """Create a new wrapper."""
+        self.model_admin: ModelListComponent = model_admin
+        self.kwargs = kwargs
+
+    def get_queryset(self, request):
+        """Call the get_queryset method with kwargs."""
+        return self.model_admin.get_queryset(request, **self.kwargs)
+
+    def get_list_filter(self, request):
+        """Call the get_list_filter method with kwargs."""
+        return self.model_admin.get_list_filter(request, **self.kwargs)
+
+    def get_ordering(self, request):
+        """Call the get_ordering method with kwargs."""
+        return self.model_admin.get_ordering(request, **self.kwargs)
+
+    def __getattr__(self, item):
+        """Delegate all other calls to the ModelListComponent."""
+        return getattr(self.model_admin, item)
 
 
 def first_letter_hierarchy(cl: ChangeList):
