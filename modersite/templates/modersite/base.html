@@ -1,5 +1,7 @@
 {% load static pipeline_sri  modersite i18n django_bootstrap5 cookie_consent_tags %}<!doctype html>
-{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" dir="{{ LANGUAGE_BIDI|yesno:'rtl,ltr,auto' }}" {% if DF_COLOR_THEMES %}data-bs-theme="{{ COLOR_THEME|default:'auto' }}"
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="{{ LANGUAGE_CODE|default:"en-us" }}" dir="{{ LANGUAGE_BIDI|yesno:'rtl,ltr,auto' }}"
+      {% if DF_COLOR_THEMES %}data-bs-theme="{{ COLOR_THEME|default:'auto' }}"
       data-df-dark-theme="{{ DF_COLOR_THEMES.2.0 }}" data-df-light-theme="{{ DF_COLOR_THEMES.1.0 }}"{% endif %}>
 <head>
     {% block head_meta_global %}
@@ -56,7 +58,9 @@
     <nav class="navbar navbar-expand-lg sticky-top text-bg-primary">
         <div class="container">
             {% block navbar_site_title %}
-                <a class="navbar-brand" href="{% url 'index' %}">{{ PAGE_TITLE|default:DF_SITE_TITLE }}</a>
+                <a class="navbar-brand" href="{% url 'index' %}"><img class="w-25"
+                                                                      src="{% static 'favicon/apple-touch-icon.png' %}"
+                                                                      alt="{% trans 'Site logo' %}"></a>
             {% endblock navbar_site_title %}
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbar-content" aria-controls="navbar-content"
@@ -142,7 +146,10 @@
                 <div class="row">
                     <div class="col-lg-8 col-md-7 col-sm-6">
                         <h1>{{ PAGE_TITLE|default:DF_SITE_TITLE }}</h1>
-                        <p class="lead">{{ PAGE_DESCRIPTION|default:DF_SITE_DESCRIPTION }}</p>
+                        {% if PAGE_DESCRIPTION == "" %}
+                        {% elif PAGE_DESCRIPTION or DF_SITE_DESCRIPTION %}
+                            <p class="lead">{{ PAGE_DESCRIPTION|default:DF_SITE_DESCRIPTION }}</p>
+                        {% endif %}
                     </div>
                     <div class="col-lg-4 col-md-5 col-sm-6"></div>
                 </div>

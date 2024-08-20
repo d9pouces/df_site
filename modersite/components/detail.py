@@ -1,6 +1,6 @@
 """Component and generic View for displaying the details of a model instance."""
 
-from typing import List, Type
+from typing import Dict, List, Optional, Type, Union
 
 from df_websockets.tasks import set_websocket_topics
 from django import forms
@@ -9,6 +9,8 @@ from django.contrib.admin.utils import flatten_fieldsets
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.forms import fields_for_model
+from django.urls import reverse
+from django.utils.translation import gettext as _
 from django.views.generic import DetailView
 
 from modersite.components.base import ModelComponent
@@ -150,12 +152,40 @@ class ModelDetailView(DetailView):
             "modersite/detail.html",
         ]
 
+    def get_breadcrumb(self) -> List[Dict[str, Union[str, bool]]]:
+        """Return the breadcrumb for the view.
+
+        The breadcrumb is a list of dictionaries with the following keys:
+        * `link`: URL to link to
+        * `title`: Text to display
+        * `active`: boolean, element is active, meaning that the link is not displayed
+        """
+        return [
+            {"link": reverse("index"), "title": _("Home"), "active": False},
+            {"link": None, "title": str(self.object), "active": True},
+        ]
+
     def get_context_data(self, **kwargs):
         """Get the context data for the view."""
         context = super().get_context_data(**kwargs)
         context["detail_component"] = self.component
-        context["PAGE_TITLE"] = str(self.object)
-        if hasattr(self.object, "get_absolute_url"):
-            context["PAGE_URL"] = self.object.get_absolute_url()
+        context["detail_breadcrumb"] = self.get_breadcrumb()
+        context["PAGE_TITLE"] = self.get_page_title()
+        context["PAGE_DESCRIPTION"] = self.get_page_description()
+        context["PAGE_URL"] = self.get_page_url(context)
         set_websocket_topics(self.request, self.object)
         return context
+
+    def get_page_url(self, context) -> Optional[str]:
+        """Return the URL of the current page."""
+        if hasattr(self.object, "get_absolute_url"):
+            return self.object.get_absolute_url()
+
+    def get_page_title(self) -> Optional[str]:
+        """Return the title of the current page."""
+        return str(self.object)
+
+    def get_page_description(self) -> Optional[str]:
+        """Return the description of the current page."""
+        # noinspection PyProtectedMember
+        return self.object._meta.verbose_name
