@@ -55,6 +55,22 @@ class RibbonDetailView(ModelDetailView):
     """Ribbon view."""
 
     model = AlertRibbon
+    fieldsets = [
+        (
+            None,
+            {
+                "fields": [("summary", "url"), ("start_date", "end_date"), ("position", "color")],
+            },
+        ),
+        (
+            "Advanced options",
+            {
+                "classes": ["can-collapse"],
+                "fields": ["message", "is_active"],
+                "description": "These options are <a href='#'>for</a> advanced users only.",
+            },
+        ),
+    ]
 
 
 class DemoView(TemplateView):
