@@ -7,10 +7,10 @@ from django.contrib import messages
 from django.utils.translation import gettext as _
 from django.views.generic import TemplateView
 
-from modersite.components.detail import ModelDetailComponent, ModelDetailView
-from modersite.components.list import ModelListComponent
-from modersite.components.list_filters import BooleanFieldListFilter, ChoicesFieldListFilter, DateFieldListFilter
-from modersite.models import AlertRibbon
+from df_site.components.detail import ModelDetailComponent, ModelDetailView
+from df_site.components.list import ModelListComponent
+from df_site.components.list_filters import BooleanFieldListFilter, ChoicesFieldListFilter, DateFieldListFilter
+from df_site.models import AlertRibbon
 
 logger = logging.getLogger(__name__)
 

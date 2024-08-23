@@ -1,4 +1,4 @@
-ModerSite
+df_site
 ---------
 
 Proof of concept for a site that uses some technologies I want to learn.

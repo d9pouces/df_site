@@ -70,7 +70,7 @@
   "keywords": [],
   "license": "CeCILL-B",
   "main": "index.ts",
-  "name": "modersite",
+  "name": "df_site",
   "scripts": {
     "build": "webpack --mode production",
     "dev": "webpack --mode development"

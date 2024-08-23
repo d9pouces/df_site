@@ -35,7 +35,7 @@ repos:
   hooks:
   - id: ruff
     args: [--fix]
-    exclude: ^(modersite/migrations/)
+    exclude: ^(df_site/migrations/)
   - id: ruff-format
     exclude: ^(node_modules/.*)
 - repo: https://github.com/shellcheck-py/shellcheck-py
@@ -65,6 +65,6 @@ repos:
   hooks:
   - id: eslint
     files: \.[jt]s$
-    exclude: ^(node_modules/.*|modersite/static/js/.*)
+    exclude: ^(node_modules/.*|df_site/static/js/.*)
 default_language_version:
   python: python3.12

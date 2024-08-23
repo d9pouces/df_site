@@ -1,0 +1,19 @@
+.ck.ck-editor__editable_inline {
+    border-left: none;
+    border-right: none;
+    border-bottom: none;
+}
+
+.ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content {
+    border: none;
+}
+
+.ck-editor__singleline {
+    .ck.ck-content.ck-editor__editable {
+        min-height: auto;
+    }
+}
+
+.ck.ck-balloon-panel.ck-powered-by-balloon.ck-balloon-panel_visible {
+    display: none;
+}

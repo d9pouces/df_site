@@ -1,6 +1,6 @@
 """manage script for development purpose."""
 
-from modersite.__main__ import main
+from df_site.__main__ import main
 
 if __name__ == "__main__":
     main()

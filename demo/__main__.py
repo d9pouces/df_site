@@ -1,4 +1,4 @@
-"""Allow to use "python3 -m modersite" to run the manage command."""
+"""Allow to use "python3 -m df_site" to run the manage command."""
 
 import multiprocessing
 import os

@@ -409,4 +409,4 @@ cython_debug/
 # Log files (if you are creating logs in debug mode, uncomment this)
 # *.log
 
-!modersite/static/django_ckeditor_5/dist
+!df_site/static/django_ckeditor_5/dist

@@ -1,0 +1,5 @@
+@for $i from 1 through 10 {
+  .va-#{$i} {
+    height: $i * 2em;
+  }
+}

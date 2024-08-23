@@ -6,12 +6,12 @@ const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 module.exports = {
     entry: {
         base: [
-            './modersite_js/base.ts',
-            './modersite_js/base.scss',
+            './df_site_js/base.ts',
+            './df_site_js/base.scss',
         ],
         app: [
-            './modersite_js/app.ts',
-            './modersite_js/app.scss'
+            './df_site_js/app.ts',
+            './df_site_js/app.scss'
         ]
     },
     resolve: {
@@ -19,7 +19,7 @@ module.exports = {
     },
     output: {
         filename: 'js/[name].js',
-        path: path.resolve(__dirname, 'modersite/static'),
+        path: path.resolve(__dirname, 'df_site/static'),
     },
     optimization: {
         minimize: false
@@ -104,18 +104,18 @@ module.exports = {
 module.exports = {
     entry: {
         base: [
-            './modersite_js/base.ts',
-            './modersite_js/base.scss',
+            './df_site_js/base.ts',
+            './df_site_js/base.scss',
         ],
         app: [
-            './modersite_js/app.ts',
-            './modersite_js/app.scss'
+            './df_site_js/app.ts',
+            './df_site_js/app.scss'
         ]
     },
     devtool: 'source-map',
     output: {
         filename: 'js/[name].js',
-        path: path.resolve(__dirname, 'modersite/static'),
+        path: path.resolve(__dirname, 'df_site/static'),
     },
     module: {
         rules: [
