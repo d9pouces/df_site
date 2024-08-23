@@ -2,20 +2,14 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./df_site_js/app.ts":
-/*!*****************************!*\
-  !*** ./df_site_js/app.ts ***!
-  \*****************************/
+/***/ 707:
 /***/ (() => {
 
 
 
 /***/ }),
 
-/***/ "./df_site_js/app.scss":
-/*!*******************************!*\
-  !*** ./df_site_js/app.scss ***!
-  \*******************************/
+/***/ 867:
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 "use strict";
@@ -27,7 +21,7 @@ module.exports = __webpack_require__.p + "css/app.css";
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
-/******/
+/******/ 	
 /******/ 	// The require function
 /******/ 	function __webpack_require__(moduleId) {
 /******/ 		// Check if module is in cache
@@ -41,14 +35,14 @@ module.exports = __webpack_require__.p + "css/app.css";
 /******/ 			// no module.loaded needed
 /******/ 			exports: {}
 /******/ 		};
-/******/
+/******/ 	
 /******/ 		// Execute the module function
 /******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
-/******/
+/******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
 /******/ 	}
-/******/
+/******/ 	
 /************************************************************************/
 /******/ 	/* webpack/runtime/global */
 /******/ 	(() => {
@@ -61,7 +55,7 @@ module.exports = __webpack_require__.p + "css/app.css";
 /******/ 			}
 /******/ 		})();
 /******/ 	})();
-/******/
+/******/ 	
 /******/ 	/* webpack/runtime/publicPath */
 /******/ 	(() => {
 /******/ 		var scriptUrl;
@@ -84,15 +78,15 @@ module.exports = __webpack_require__.p + "css/app.css";
 /******/ 		scriptUrl = scriptUrl.replace(/#.*$/, "").replace(/\?.*$/, "").replace(/\/[^\/]+$/, "/");
 /******/ 		__webpack_require__.p = scriptUrl + "../";
 /******/ 	})();
-/******/
+/******/ 	
 /************************************************************************/
-/******/
+/******/ 	
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	__webpack_require__("./df_site_js/app.ts");
+/******/ 	__webpack_require__(707);
 /******/ 	// This entry module doesn't tell about it's top-level declarations so it can't be inlined
-/******/ 	var __webpack_exports__ = __webpack_require__("./df_site_js/app.scss");
-/******/
+/******/ 	var __webpack_exports__ = __webpack_require__(867);
+/******/ 	
 /******/ })()
 ;
 //# sourceMappingURL=app.js.map
