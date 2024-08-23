@@ -410,3 +410,4 @@ cython_debug/
 # *.log
 
 !df_site/static/django_ckeditor_5/dist
+django_data/
