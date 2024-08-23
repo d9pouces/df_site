@@ -4,7 +4,6 @@ from django.urls import include, path
 from django.utils.module_loading import import_string
 
 import settings
-from demo.urls import urlpatterns as demo_urlpatterns
 from df_site.views import BrowserConfigView, csp_report_view, site_webmanifest_view
 
 urlpatterns = [
@@ -19,4 +18,4 @@ urlpatterns = [
         import_string(settings.CK_EDITOR_5_UPLOAD_FILE_VIEW),
         name=settings.CK_EDITOR_5_UPLOAD_FILE_VIEW_NAME,
     ),
-] + demo_urlpatterns
+]

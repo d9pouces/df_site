@@ -87,16 +87,18 @@ def get_allowed_attributes(config_name: str) -> Dict[str, List[str]]:
 class CKEditor5Field(forms.CharField):
     """A form field using CKEditor 5 as text editor."""
 
-    def __init__(self, *args, config_name="default", **kwargs) -> None:
+    default_ckeditor5_config = "default"
+
+    def __init__(self, *args, config_name=None, **kwargs) -> None:
         """Initialize the field."""
-        self.ckeditor5_config = config_name
+        self.ckeditor5_config = config_name or self.default_ckeditor5_config
         self.required_ = kwargs.get("required", True)
         kwargs["required"] = False
         css_class = "django_ckeditor_5"
-        self.is_inline_widget = "inline" in config_name
+        self.is_inline_widget = "inline" in self.ckeditor5_config
         if self.is_inline_widget:
             css_class += " ck-editor__singleline"
-        kwargs["widget"] = CKEditor5Widget(attrs={"class": css_class}, config_name=config_name)
+        kwargs["widget"] = CKEditor5Widget(attrs={"class": css_class}, config_name=self.ckeditor5_config)
         super().__init__(*args, **kwargs)
 
     def to_python(self, value):
@@ -121,3 +123,15 @@ class CKEditor5Field(forms.CharField):
         if value is None:
             return ""
         return value
+
+
+class InlineCKEditor5Field(CKEditor5Field):
+    """A form field using CKEditor 5 as inline text editor."""
+
+    default_ckeditor5_config = "inline"
+
+
+class InlineLinkCKEditor5Field(CKEditor5Field):
+    """A form field using CKEditor 5 as inline text editor."""
+
+    default_ckeditor5_config = "inline_link"

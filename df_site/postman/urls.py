@@ -71,5 +71,5 @@ urlpatterns = [
     # this view is not a part of the original postman views
     re_path(pgettext_lazy("postman_url", r"^mark-message/$"), MessageUpdateView.as_view(), name="update-message"),
     re_path(r"^$", IndexView.as_view()),
-    re_path(pgettext_lazy("postman_url", r"^api/"), include(api_urls)),
+    re_path(pgettext_lazy("postman_url", r"^api/"), include(api_urls, namespace="api")),
 ]

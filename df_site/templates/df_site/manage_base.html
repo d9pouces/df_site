@@ -13,7 +13,6 @@
                 {% url 'socialaccount_connections' as socialaccount_url %}
                 {% url 'mfa_index' as mfa_url %}
                 {% url 'usersessions_list' as usersessions_list_url %}
-                <span class="list-group-item list-group-item-danger">{{ url_name }} {{ request.resolver_match.namespace }}</span>
                 <a class="list-group-item list-group-item-action {% if request.resolver_match.namespace == 'postman' %}active{% endif %}"
                    href="{{ pm_url }}">{% trans "Messaging" %}</a>
                 <a class="list-group-item list-group-item-action {% if url_name == 'settings' %}active{% endif %}"

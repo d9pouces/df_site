@@ -128,13 +128,13 @@
     {% for ribbon in DF_RIBBONS %}
         {% if ribbon.html_tag == "div" %}
             <div class="{{ ribbon.css_classes }} my-1 text-center p-3" data-ribbon="{{ ribbon.summary }}"
-                 title="{{ ribbon.summary }}">{{ ribbon.message }}</div>
+                 title="{{ ribbon.summary|striptags }}"><h1>{{ ribbon.summary|safe }}</h1>{{ ribbon.message|safe }}</div>
         {% elif ribbon.url %}
             <a class="{{ ribbon.css_classes }}" href="{{ ribbon.url }}" data-ribbon="{{ ribbon.summary }}"
-               title="{{ ribbon.summary }}">{{ ribbon.summary }}</a>
+               title="{{ ribbon.summary|striptags }}">{{ ribbon.summary|safe }}</a>
         {% else %}
-            <span class="{{ ribbon.css_classes }}" data-ribbon="{{ ribbon.summary }}"
-                  title="{{ ribbon.summary }}">{{ ribbon.summary }}</span>
+            <span class="{{ ribbon.css_classes }}" data-ribbon="{{ ribbon.summary|safe }}"
+                  title="{{ ribbon.summary|striptags }}">{{ ribbon.summary|safe }}</span>
         {% endif %}
     {% endfor %}
     <div class="container px-0">

@@ -6,6 +6,8 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
+from df_site.model_fields import CKEditor5CharField, CKEditor5TextField
+
 
 class AlertRibbon(models.Model):
     """Model for alert messages that are shown to users."""
@@ -37,9 +39,9 @@ class AlertRibbon(models.Model):
     )
 
     color = models.CharField(max_length=10, choices=LEVELS, default="info", db_index=True, verbose_name=_("Color"))
-    message = models.TextField(verbose_name=_("Message"))
+    message = CKEditor5TextField(verbose_name=_("Message"), blank=True, default="")
     url = models.URLField(null=True, blank=True, verbose_name=_("URL"))  # noqa: DJ001
-    summary = models.CharField(max_length=100, blank=True, verbose_name=_("Summary"), default="")
+    summary = CKEditor5CharField(max_length=100, verbose_name=_("Summary"), db_index=True)
     start_date = models.DateTimeField(null=True, blank=True, db_index=True, verbose_name=_("Start date"))
     end_date = models.DateTimeField(null=True, blank=True, db_index=True, verbose_name=_("End date"))
     is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Is active"))
@@ -56,7 +58,7 @@ class AlertRibbon(models.Model):
 
     def __str__(self):
         """Return the string representation of the alert message."""
-        return self.message
+        return self.summary
 
     def get_absolute_url(self):
         """Return the URL for the alert message."""

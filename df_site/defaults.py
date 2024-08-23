@@ -5,7 +5,6 @@ from typing import List, Tuple
 from df_config.config.dynamic_settings import SettingReference
 from django.utils.translation import gettext_lazy as _
 
-DF_INDEX_VIEW = "demo.views.IndexView"
 DF_SITE_TITLE = "Technological proof of concept"
 DF_SITE_DESCRIPTION = "This is a technological proof of concept."
 DF_SITE_KEYWORDS = ["Django", "Bootstrap", "WebSockets", "HTMX", "Django Channels"]
@@ -46,7 +45,6 @@ DF_TEMPLATE_CONTEXT_PROCESSORS = [
     "django.template.context_processors.request",
 ]
 DF_INSTALLED_APPS = [
-    "demo",
     "django_bootstrap5",
     "df_site.app.DFSiteApp",
     "cookie_consent",
