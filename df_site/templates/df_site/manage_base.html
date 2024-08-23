@@ -19,23 +19,23 @@
                 <a class="list-group-item list-group-item-action {% if url_name == 'settings' %}active{% endif %}"
                    href="{{ settings_url }}">{% trans "Settings" %}</a>
                 {% if email_url %}
-                    <a class="list-group-item list-group-item-action {% if url_name == 'account_email' %}active{% endif %}"
+                    <a class="list-group-item list-group-item-action {% if 'account_' in url_name and '_email' in url_name %}active{% endif %}"
                        href="{{ email_url }}">{% trans "Change Email" %}</a>
                 {% endif %}
                 {% if change_password_url %}
-                    <a class="list-group-item list-group-item-action {% if url_name == 'account_change_password' or url_name == 'account_set_password' %}active{% endif %}"
+                    <a class="list-group-item list-group-item-action {% if 'account_' in url_name and '_password' in url_name %}active{% endif %}"
                        href="{{ change_password_url }}">{% trans "Change Password" %}</a>
                 {% endif %}
                 {% if mfa_url %}
-                    <a class="list-group-item list-group-item-action {% if url_name == 'mfa_index' or url_name == 'mfa_view_recovery_codes' or url_name == 'mfa_generate_recovery_codes' %}active{% endif %}"
+                    <a class="list-group-item list-group-item-action {% if 'mfa_' in url_name %}active{% endif %}"
                        href="{{ mfa_url }}">{% trans "Two-Factor Authentication" %}</a>
                 {% endif %}
                 {% if socialaccount_url %}
-                    <a class="list-group-item list-group-item-action {% if url_name == 'socialaccount_connections' %}active{% endif %}"
+                    <a class="list-group-item list-group-item-action {% if 'socialaccount_' in url_name %}active{% endif %}"
                        href="{{ socialaccount_url }}">{% trans "Social Accounts" %}</a>
                 {% endif %}
                 {% if usersessions_list_url %}
-                    <a class="list-group-item list-group-item-action {% if url_name == 'usersessions_list' %}active{% endif %}"
+                    <a class="list-group-item list-group-item-action {% if 'usersessions_' in url_name %}active{% endif %}"
                        href="{{ usersessions_list_url }}">{% trans "Sessions" %}</a>
                 {% endif %}
             {% endwith %}
