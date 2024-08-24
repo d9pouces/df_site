@@ -1,0 +1,47 @@
+{% extends "df_site/base.html" %}
+{% load i18n df_site websockets %}
+
+{% block navbar_content %}
+    <ul class="navbar-nav me-auto">
+        <li class="nav-item">
+            <a class="nav-link active" href="{% url 'index' %}">{% trans 'Home' %}
+                <span class="visually-hidden">(current)</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'index' %}">{% trans "Paint manager" %}</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'index' %}">Popup</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+        </li>
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
+               role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+            <div class="dropdown-menu">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <a class="dropdown-item" href="#">Something else here</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Separated link</a>
+            </div>
+        </li>
+    </ul>
+{% endblock navbar_content %}
+
+{% block navbar_search_form %}
+    <form class="d-flex" action="{% url 'index' %}" method="get">
+        <div class="input-group">
+            {% for input_value in SEARCH_KWARGS.items %}
+                <input type="hidden" value="{{ input_value.1 }}" name="{{ input_value.0 }}">
+            {% endfor %}
+            <input type="text" class="form-control" placeholder="{% trans 'Search' %}"
+                   name="{{ SEARCH_VAR }}"
+                   aria-label="{% trans 'Search' %}" aria-describedby="navbar-search-button">
+            <button class="btn btn-outline-light" type="submit"
+                    id="navbar-search-button">{% fa6_icon 'search' %}</button>
+        </div>
+    </form>
+{% endblock navbar_search_form %}

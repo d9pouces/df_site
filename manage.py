@@ -1,6 +1,6 @@
 """manage script for development purpose."""
 
-from demo.__main__ import main
+from paint_manager.__main__ import main
 
 if __name__ == "__main__":
     main()

@@ -120,6 +120,11 @@ class AbstractPreferences(models.Model):
 class PreferencesUser(AbstractUser, AbstractPreferences):
     """User model for the df_site app."""
 
+    class Meta(AbstractUser.Meta):
+        """Meta options for the model."""
+
+        swappable = "AUTH_USER_MODEL"
+
     def __str__(self):
         """Return the string representation of the user."""
         return super().__str__()

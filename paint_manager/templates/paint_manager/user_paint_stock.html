@@ -1,0 +1,7 @@
+<ul>{% load i18n %}
+    {% for state in stock_level %}
+        <li>
+            {{ state.html_usage }}{% if state.comment %} <em>{{ state.comment }}</em>{% endif %}
+        </li>
+    {% endfor %}
+</ul>

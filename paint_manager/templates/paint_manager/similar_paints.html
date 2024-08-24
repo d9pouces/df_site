@@ -1,0 +1,49 @@
+<table>{% load i18n %}
+        <tr>
+        <th>{% trans "Peinture" %}</th>
+             <th>{% trans "Aperçu" %}</th>
+             <th>{% trans "∆E (CIE76)" %}</th>
+             <th>{% trans "Marque" %}</th>
+             <th>{% trans "Aspect" %}</th>
+             <th>{% trans "Solvant" %}</th>
+             <th>{% trans "Format" %}</th>
+             <th>{% trans "Taille" %}</th>
+             <th>{% trans "Stock" %}</th>
+             <th>{% trans "sRGB" %}</th>
+             <th>{% trans "Références" %}</th>
+        </tr>
+    {% for similar_paint in similar_paints %}
+        {% with paint=similar_paint.paint %}{% if similar_paint.references %}
+        <tr>
+        <th><a href="{% url "admin:paint_manager_paint_change" object_id=paint.id %}">{{ paint.reference }} {{ paint.name }}</a></th>
+             <td>{{ paint.html_color }}</td>
+             <td>{{ similar_paint.difference|floatformat }}</td>
+             <td>{{ paint.brand }}</td>
+             <td>{{ paint.get_finish_display }}</td>
+             <td>{{ paint.get_solvent_display }}</td>
+             <td>{{ paint.get_packaging_display }}</td>
+             <td>{{ paint.size }}</td>
+        <td>{% for state in similar_paint.user_paints %}{{ state.html_usage }}{% if state.comment %} <em>{{ state.comment }}</em>{% endif %}{% endfor %}</td>
+            <td>{{ similar_paint.srgb_difference|floatformat }}</td>
+            <td>{% for ref in similar_paint.references %}<a href="{{ ref.1 }}">{{ ref.0 }}</a>  {% endfor %}</td>
+        </tr>
+        {% endif %}{% endwith %}
+    {% endfor %}
+    {% for similar_paint in similar_paints %}
+        {% with paint=similar_paint.paint %}{% if not similar_paint.references %}
+        <tr>
+        <th><a href="{% url "admin:paint_manager_paint_change" object_id=paint.id %}">{{ paint.reference }} {{ paint.name }}</a></th>
+             <td>{{ paint.html_color }}</td>
+             <td>{{ similar_paint.difference|floatformat }}</td>
+             <td>{{ paint.brand }}</td>
+             <td>{{ paint.get_finish_display }}</td>
+             <td>{{ paint.get_solvent_display }}</td>
+             <td>{{ paint.get_packaging_display }}</td>
+             <td>{{ paint.size }}</td>
+        <td>{% for state in similar_paint.user_paints %}{{ state.html_usage }}{% if state.comment %} <em>{{ state.comment }}</em>{% endif %}{% endfor %}</td>
+            <td>{{ similar_paint.srgb_difference|floatformat }}</td>
+            <td>&nbsp;</td>
+        </tr>
+        {% endif %}{% endwith %}
+    {% endfor %}
+</table>

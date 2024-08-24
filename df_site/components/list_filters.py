@@ -32,7 +32,10 @@ class FieldListFilter(ListFilterMixin, FieldListFilterBase):
 class RelatedFieldListFilter(ListFilterMixin, RelatedFieldListFilterBase):
     """A filter for related fields."""
 
-    pass
+    def field_admin_ordering(self, field, request, model_admin):
+        """Return the default ordering for related field, skipping the use of the admin site."""
+        # noinspection PyProtectedMember
+        return field.remote_field.model._meta.ordering
 
 
 class BooleanFieldListFilter(ListFilterMixin, BooleanFieldListFilterBase):
