@@ -17,3 +17,4 @@ DF_INSTALLED_APPS.insert(0, "paint_manager")  # noqa F405
 AUTH_USER_MODEL = "paint_manager.PaintOwner"
 AUTH_USER_SETTINGS_VIEW = "paint_manager.views.CustomUserSettingsView"
 DF_TEMPLATE_CONTEXT_PROCESSORS.append("paint_manager.context_processors.search_infos")  # noqa F405
+PIPELINE["JAVASCRIPT"]["base"]["source_filenames"].append("paint_manager/colors.js")  # noqa F405

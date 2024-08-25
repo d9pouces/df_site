@@ -15,7 +15,7 @@
     {% for similar_paint in similar_paints %}
         {% with paint=similar_paint.paint %}{% if similar_paint.references %}
         <tr>
-        <th><a href="{% url "admin:paint_manager_paint_change" object_id=paint.id %}">{{ paint.reference }} {{ paint.name }}</a></th>
+        <th><a href="{{ paint.get_absolute_url }}">{{ paint.reference }} {{ paint.name }}</a></th>
              <td>{{ paint.html_color }}</td>
              <td>{{ similar_paint.difference|floatformat }}</td>
              <td>{{ paint.brand }}</td>
@@ -32,7 +32,7 @@
     {% for similar_paint in similar_paints %}
         {% with paint=similar_paint.paint %}{% if not similar_paint.references %}
         <tr>
-        <th><a href="{% url "admin:paint_manager_paint_change" object_id=paint.id %}">{{ paint.reference }} {{ paint.name }}</a></th>
+        <th><a href="{{ paint.get_absolute_url }}">{{ paint.reference }} {{ paint.name }}</a></th>
              <td>{{ paint.html_color }}</td>
              <td>{{ similar_paint.difference|floatformat }}</td>
              <td>{{ paint.brand }}</td>

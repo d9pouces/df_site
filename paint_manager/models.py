@@ -12,6 +12,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Q
 from django.template.loader import render_to_string
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
@@ -132,12 +133,18 @@ class Paint(models.Model):
 
     __str__.admin_order_field = "sort_name"
 
+    def get_absolute_url(self):
+        """Return the URL of the paint."""
+        return reverse("paint_detail", kwargs={"pk": self.id})
+
     def html_color(self, height=1):
         """Return the color as a HTML small square."""
-        width = 2 * height
+        """Display the color as a small square."""
         msg = (
-            f'<div class="html-color" style="width:{width}em;height:{height}em;'
-            f'background:#{self.color_r:02x}{self.color_g:02x}{self.color_b:02x}"></div>'
+            "<div "
+            f'class="html-color-{height}" '
+            f'data-mpm-color="#{self.color_r:02x}{self.color_g:02x}{self.color_b:02x}"'
+            ">"
         )
         return mark_safe(msg)  # noqa S308
 
@@ -340,11 +347,7 @@ class UserPaint(models.Model):
 
     def html_color(self):
         """Display the color as a small square."""
-        msg = (
-            f'<div class="html-color" style="width:2em;height:1em;'
-            f'background:#{self.paint.color_r:02x}{self.paint.color_g:02x}{self.paint.color_b:02x}">'
-        )
-        return mark_safe(msg)  # noqa S308
+        return self.paint.html_color(1)
 
     html_color.short_description = _("Aperçu")
     html_color.admin_order_field = (
