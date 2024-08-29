@@ -73,6 +73,12 @@ https://www.saaspegasus.com/guides/modern-javascript-for-django-developers/clien
 - [X] [ACE](https://ace.c9.io/): code editor
 - [X] [Django-RichtextField](https://github.com/jaap3/django-richtextfield): use CKEditor or TinyMCE
 
+## Specific URLs
+
+- [X] [robots.txt](https://www.robotstxt.org/)
+- [ ] [humans.txt](http://humanstxt.org/)
+- [X] [.well-known/change-password](https://w3c.github.io/webappsec-change-password-url/)
+
 
 ## HTML and web server
 

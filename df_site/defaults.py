@@ -6,6 +6,10 @@ from df_config.config.dynamic_settings import SettingReference
 from django.utils.translation import gettext_lazy as _
 
 DF_SITE_TITLE = "Technological proof of concept"
+DF_SITE_SECURITY_EMAIL = SettingReference("ADMIN_EMAIL")
+DF_SITE_SECURITY_LANGUAGE_CODE = SettingReference("LANGUAGE_CODE")
+DF_SITE_SECURITY_GPG_CONTENT = None
+
 DF_SITE_DESCRIPTION = "This is a technological proof of concept."
 DF_SITE_KEYWORDS = ["Django", "Bootstrap", "WebSockets", "HTMX", "Django Channels"]
 DF_SITE_AUTHOR = "d9pouces"

@@ -3,6 +3,8 @@
 from django import forms
 from django.contrib.auth import get_user_model
 
+from paint_manager.models import UserPaint
+
 
 class UserSettingsForm(forms.ModelForm):
     """Form for the user settings page."""
@@ -20,3 +22,13 @@ class UserSettingsForm(forms.ModelForm):
             "preferred_brands",
             "solvent",
         ]
+
+
+class AddUserPaintForm(forms.ModelForm):
+    """Form for adding a user paint."""
+
+    class Meta:
+        """Meta options for the form."""
+
+        model = UserPaint
+        fields = ["remaining", "comment", "buying_date"]

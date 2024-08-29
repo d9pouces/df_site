@@ -1,15 +1,19 @@
 """Views for the df_site app."""
 
+import datetime
 import json
 import logging
 
 from django.conf import settings
 from django.contrib import messages
-from django.http import HttpRequest, HttpResponse, JsonResponse
+from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
 from django.templatetags.static import static
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
+
+from df_site.templatetags.df_site import abs_url
 
 logger = logging.getLogger(__name__)
 
@@ -55,3 +59,34 @@ class BrowserConfigView(TemplateView):
 
     template_name = "favicon/browserconfig.xml"
     content_type = "application/xml"
+
+
+def security_gpg_view(request: HttpRequest) -> HttpResponse:
+    """Return the GPG key to communicate with about security problems."""
+    if settings.DF_SITE_SECURITY_GPG_CONTENT:
+        raise Http404
+    response = HttpResponse(settings.DF_SITE_SECURITY_GPG_CONTENT, content_type="text/plain")
+    response["Content-Disposition"] = 'attachment; filename="gpg.txt"'
+    return response
+
+
+class SecurityTxtView(TemplateView):
+    """View for the ./well-known/security.txt file."""
+
+    template_name = "df_site/security.txt"
+    content_type = "plain/text"
+
+    def get_context_data(self, **kwargs):
+        """Return the context data for the view."""
+        context = super().get_context_data(**kwargs)
+        context["security_txt_path"] = abs_url(reverse("well-known-security"))
+        context["security_email"] = settings.DF_SITE_SECURITY_EMAIL
+        context["security_language_code"] = settings.DF_SITE_SECURITY_LANGUAGE_CODE
+        gpg_key = None
+        if settings.DF_SITE_SECURITY_GPG_CONTENT:
+            gpg_key = abs_url(reverse("well-known-gpg"))
+        context["security_gpg_key"] = gpg_key
+        now = datetime.datetime.now(tz=datetime.UTC)
+        now = now - datetime.timedelta(microseconds=now.microsecond)
+        context["security_expires"] = now + datetime.timedelta(days=30)
+        return context

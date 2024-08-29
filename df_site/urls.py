@@ -2,11 +2,19 @@
 
 from django.urls import include, path
 from django.utils.module_loading import import_string
+from django.views.generic import RedirectView
 
 import settings
-from df_site.views import BrowserConfigView, csp_report_view, site_webmanifest_view
+from df_site.views import BrowserConfigView, SecurityTxtView, csp_report_view, security_gpg_view, site_webmanifest_view
 
 urlpatterns = [
+    path(
+        ".well-known/change-password",
+        RedirectView.as_view(pattern_name="account_change_password", permanent=True),
+        name="well-known-change-password",
+    ),
+    path(".well-known/security.txt", SecurityTxtView.as_view(), name="well-known-security"),
+    path(".well-known/gpg.txt", security_gpg_view, name="well-known-gpg"),
     path("site.webmanifest", site_webmanifest_view, name="site_webmanifest"),
     path("browserconfig.xml", BrowserConfigView.as_view(), name="browserconfig"),
     path(settings.CSP_REPORT_URI[1:], csp_report_view, name="csp_report"),
