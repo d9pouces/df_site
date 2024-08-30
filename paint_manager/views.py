@@ -1,10 +1,10 @@
 """Groups all views related to the users."""
 
-from django.views.generic import TemplateView
+from django.views.generic import FormView, TemplateView
 
 from df_site.components.detail import ModelDetailView
 from df_site.users.views import UserSettingsView
-from paint_manager.forms import UserSettingsForm
+from paint_manager.forms import AddUserPaintForm, UserSettingsForm
 from paint_manager.lists import paints_list
 from paint_manager.models import Paint
 
@@ -26,6 +26,13 @@ class PaintDetailView(ModelDetailView):
         ("packaging", "size", "stock_level"),
         "similar_paints",
     )
+
+
+class PaintAddView(FormView):
+    """View for adding a paint."""
+
+    template_name = "paint_manager/add_paint.html"
+    form_class = AddUserPaintForm
 
 
 class IndexView(TemplateView):

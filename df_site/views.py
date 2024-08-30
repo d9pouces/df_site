@@ -90,3 +90,21 @@ class SecurityTxtView(TemplateView):
         now = now - datetime.timedelta(microseconds=now.microsecond)
         context["security_expires"] = now + datetime.timedelta(days=30)
         return context
+
+
+class HumansTxtView(TemplateView):
+    """View for the ./well-known/humans.txt file."""
+
+    template_name = "df_site/humans.txt"
+    content_type = "plain/text"
+
+    def get_context_data(self, **kwargs):
+        """Return the context data for the view."""
+        context = super().get_context_data(**kwargs)
+        now = datetime.datetime.now(tz=datetime.UTC)
+        now = now - datetime.timedelta(microseconds=now.microsecond)
+        context["humans_description"] = settings.DF_SITE_DESCRIPTION
+        context["humans_social_networks"] = settings.DF_SITE_SOCIAL_NETWORKS
+        context["humans_keywords"] = settings.DF_SITE_KEYWORDS
+        context["humans_update"] = now
+        return context

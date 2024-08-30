@@ -1,0 +1,9 @@
+{% extends 'df_site/app.html' %}
+{% load static pipeline_sri websockets df_site django_bootstrap5 %}
+
+{% block body_content %}
+    <form method="post" action="?">
+    {% bootstrap_form form %}
+    </form>
+{% endblock body_content %}
+

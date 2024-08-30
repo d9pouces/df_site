@@ -49,10 +49,11 @@ https://www.saaspegasus.com/guides/modern-javascript-for-django-developers/clien
 - [ ] [Django-auto-complete-light](https://django-autocomplete-light.readthedocs.io/en/master/)
 - [ ] [Django-htmX](https://django-htmx.readthedocs.io/en/latest/)
 - [ ] [Django-components](https://django-components.readthedocs.io/en/latest/)
-- [ ] [django-ckeditor](https://django-ckeditor.readthedocs.io/en/latest/)
-- [ ] [Django-recaptcha](https://pypi.org/project/django-recaptcha/)
-- [ ] Complete solution for ListView,
-- [ ] Complete solution for DetailView, CreateView, UpdateView, DeleteView
+- [X] [Django-recaptcha](https://pypi.org/project/django-recaptcha/)
+- [X] [django-ckeditor-5](https://github.com/hvlads/django-ckeditor-5)
+- [X] Complete solution for ListView,
+- [X] Complete solution for DetailView
+- [ ] CreateView, UpdateView, DeleteView
 - [ ] alert messages when the site is offline (maintenance mode)
 - [ ] wait for the database to be ready
 - [ ] display global messages and banners
@@ -76,7 +77,7 @@ https://www.saaspegasus.com/guides/modern-javascript-for-django-developers/clien
 ## Specific URLs
 
 - [X] [robots.txt](https://www.robotstxt.org/)
-- [ ] [humans.txt](http://humanstxt.org/)
+- [X] [humans.txt](http://humanstxt.org/)
 - [X] [.well-known/change-password](https://w3c.github.io/webappsec-change-password-url/)
 
 
@@ -90,7 +91,7 @@ https://www.saaspegasus.com/guides/modern-javascript-for-django-developers/clien
 - [ ] [Performances](https://web.dev/)
 - [ ] [Generate a favicon](https://favicon.io/favicon-generator/)
 - [X] [Favicon validation](https://realfavicongenerator.net/favicon_checker)
-- [ ] [HTML validation](https://html5.validator.nu/)
+- [X] [HTML validation](https://html5.validator.nu/)
 - [X] [OpenGraph validation](https://www.opengraph.xyz/)
 - [ ] [Structured data validation](https://search.google.com/structured-data/testing-tool)
 - [ ] [Webhint](https://webhint.io/)
@@ -98,7 +99,7 @@ https://www.saaspegasus.com/guides/modern-javascript-for-django-developers/clien
 - [ ] [SSL validation](https://www.ssllabs.com/ssltest/)
 - [ ] [XML site map](https://www.xml-sitemaps.com/)
 - [ ] [Schema.org](https://schema.org/)
-HTML Checker, CSS Validator, Link Checker, JS Validator
+CSS Validator, Link Checker, JS Validator
 
 ## DevOps
 

@@ -2,8 +2,10 @@
 
 from typing import List, Tuple
 
-from df_config.config.dynamic_settings import SettingReference
+from df_config.config.dynamic_settings import CallableSetting, SettingReference
 from django.utils.translation import gettext_lazy as _
+
+from df_site.dynamic_settings import allauth_signup_form
 
 DF_SITE_TITLE = "Technological proof of concept"
 DF_SITE_SECURITY_EMAIL = SettingReference("ADMIN_EMAIL")
@@ -29,14 +31,26 @@ DF_ANDROID_THEME_COLOR = "#ffffff"
 DF_ANDROID_BACKGROUND_COLOR = "#ffffff"
 DF_MICROSOFT_BACKGROUND_COLOR = "#da532c"
 
-CSP_IMG_SRC = ["'self'", "data: w3.org/svg/2000"]
+CSP_IMG_SRC = ["'self'", "data: w3.org/svg/2000", "https://log.pinterest.com"]
+# "https://log.pinterest.com" is used for Pinterest
 CSP_STYLE_SRC = ["'self'"]
 CSP_FONT_SRC = ["'self'"]
 CSP_DEFAULT_SRC = ["'none'"]
-CSP_SCRIPT_SRC = ["'self'", "'unsafe-inline'"]
+CSP_SCRIPT_SRC = [
+    "'self'",
+    "https://www.google.com",
+    "https://www.gstatic.com",
+    "https://assets.pinterest.com",
+    "'unsafe-inline'",
+]
+# unsafe-inline is used for django-allauth (inline JS)
+# "https://www.google.com", "https://www.gstatic.com" are used for reCAPTCHA
+# "https://assets.pinterest.com" is used for Pinterest
 CSP_OBJECT_SRC = ["'self'"]
 CSP_MEDIA_SRC = ["'self'"]
-CSP_FRAME_SRC = ["'self'"]
+CSP_FRAME_SRC = ["'self'", "https://www.google.com", "https://assets.pinterest.com"]
+# "https://www.google.com" is used for reCAPTCHA
+# "https://assets.pinterest.com" is used for Pinterest
 CSP_CHILD_SRC = ["'self'"]
 CSP_FRAME_ANCESTORS = ["'self'"]
 CSP_FORM_ACTION = ["'self'"]
@@ -48,6 +62,8 @@ DF_TEMPLATE_CONTEXT_PROCESSORS = [
     "df_site.context_processors.global_site_infos",
     "django.template.context_processors.request",
 ]
+RECAPTCHA_PUBLIC_KEY = ""
+RECAPTCHA_PRIVATE_KEY = ""
 DF_INSTALLED_APPS = [
     "django_bootstrap5",
     "df_site.app.DFSiteApp",
@@ -56,6 +72,7 @@ DF_INSTALLED_APPS = [
     "allauth.mfa",
     "allauth.usersessions",
     "django_ckeditor_5",
+    "django_recaptcha",
 ]
 DF_MIDDLEWARE = [
     "allauth.usersessions.middleware.UserSessionsMiddleware",
@@ -147,7 +164,7 @@ MFA_PASSKEY_LOGIN_ENABLED = True
 MFA_WEBAUTHN_ALLOW_INSECURE_ORIGIN = SettingReference("DEBUG")
 ACCOUNT_LOGIN_BY_CODE_ENABLED = True
 ACCOUNT_EMAIL_VERIFICATION = "optional"
-
+ACCOUNT_SIGNUP_FORM_CLASS = CallableSetting(allauth_signup_form)
 CKEDITOR_5_USER_LANGUAGE = True
 special_chars = [
     {"title": _("smiley face"), "character": "😊"},

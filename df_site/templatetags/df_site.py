@@ -1,5 +1,6 @@
 """Custom template tags for the df_site app."""
 
+import datetime
 import re
 from html import escape
 from typing import Dict, List, Optional, Union
@@ -9,6 +10,7 @@ from django.conf import settings
 from django.contrib.admin.views.main import PAGE_VAR
 from django.core.paginator import Paginator
 from django.template.base import kwarg_re
+from django.template.defaultfilters import date
 from django.template.defaulttags import URLNode
 from django.template.exceptions import TemplateSyntaxError
 from django.template.loader import render_to_string
@@ -196,3 +198,43 @@ def component_auto_badge(
         new_value = f'{prefix}<span class="badge text-bg-{color} {extra_class}">{suffix}</span>'
         value = mark_safe(new_value)  # noqa S308
     return value
+
+
+@register.simple_tag
+@register.filter
+def schema_date(
+    value_: Optional[Union[datetime.date, datetime.datetime, datetime.timedelta]], fmt_: Optional[str] = None, **kwargs
+):
+    """Show a date in a <time></time> element.
+
+    Can be used as a filter or as a tag. In the latter case, value and format are the first two arguments.
+    Extra arguments are passed as attributes to the generated HTML.
+
+    `{% schema_date value_ fmt_ itemprop="start" %}` is rendered as
+        `<time itemprop="start" datetime="date">date</time>`
+    `{{ value_|schema_date:fmt_ }}` is rendered as `<time datetime="date">date</time>`
+    """
+    content = date(value_, fmt_)
+    if isinstance(value_, datetime.date):
+        kwargs["datetime"] = value_.strftime("%Y-%m-%d")
+    elif isinstance(value_, datetime.datetime):
+        kwargs["datetime"] = value_.isoformat()
+    elif isinstance(value_, datetime.timedelta):
+        attr = "P"
+        ts = value_.total_seconds()
+        days = int(ts // 86400)
+        ts %= 86400
+        attr += f"{days}D"
+        hours = int(ts // 3600)
+        ts %= 3600
+        attr += f"{hours}H"
+        minutes = int(ts // 60)
+        ts %= 60
+        attr += f"{minutes}M{ts}S"
+        kwargs["datetime"] = attr
+    else:
+        return content
+    escaped = {escape(k): escape(v) for k, v in kwargs.items()}
+    attr = " ".join(f'{k}="{v}"' for k, v in escaped.items())
+    msg = f"<time {attr}>{content}</time>"
+    return mark_safe(msg)  # noqa S308
