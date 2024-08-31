@@ -48,7 +48,16 @@ class PaintListComponent(ModelListComponent):
             search_fields=["name", "reference"],
             list_display=[],
             list_select_related=["brand"],
-            sortable_by=["display_name", "display_reference", "brand", "finish", "solvent", "packaging", "size"],
+            sortable_by=[
+                "display_name",
+                "display_reference",
+                "brand",
+                "finish",
+                "solvent",
+                "packaging",
+                "size",
+                "html_usage",
+            ],
             list_filter=[
                 ("reference", IsOwnedFieldListFilter),
                 ("brand", RelatedFieldListFilter),

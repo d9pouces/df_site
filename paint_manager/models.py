@@ -176,8 +176,6 @@ class Paint(models.Model):
             brands = list(user.preferred_brands.all())
         if len(brands) == 0:
             brands = list(Brand.objects.all())
-        print(brands)
-
         bound = 50
         references = defaultdict(lambda: set())
         qs = RegisteredSimilarPaint.objects.filter(Q(paint_a=self) | Q(paint_b=self))
@@ -226,7 +224,13 @@ class Paint(models.Model):
         values = list(UserPaint.objects.filter(paint=self, user=user))
         add_url = reverse("paint_add", kwargs={"pk": self.pk})
         add_url = preserve_request_query(request, add_url)
-        ctx = {"stock_level": values, "paint": self, "add_url": add_url}
+        preserved_filters = request.GET.get("_changelist_filters")
+        if preserved_filters:
+            preserved_filters = urlencode({"_changelist_filters": preserved_filters})
+            url_suffix = f"?{preserved_filters}"
+        else:
+            url_suffix = ""
+        ctx = {"stock_level": values, "paint": self, "add_url": add_url, "url_suffix": url_suffix}
         msg = render_to_string("paint_manager/user_paint_stock.html", context=ctx)
         return mark_safe(msg)  # noqa S308
 

@@ -3,13 +3,13 @@
 
 {% block body_content %}
 
-    <h2>{% trans 'Peinture à ajouter : ' %}{{ paint.brand }} {{ paint }}</h2>
+    <h2>{% trans 'Peinture à supprimer : ' %}{{ object.paint.brand }} {{ object.paint }}</h2>
     <form method="post" action="{{ ACTION_URL }}">
         {% bootstrap_form form layout="floating" %}
         {% csrf_token %}
         <div class="btn-group">
-            <button class="btn btn-primary" type="submit">{% trans 'Add' %}</button>
-            <a class="btn btn-danger" href="{{ CANCEL_URL }}">{% trans 'Cancel' %}</a>
+            <button class="btn btn-danger" type="submit">{% trans 'Supprimer' %}</button>
+            <a class="btn btn-secondary" href="{{ CANCEL_URL }}">{% trans 'Cancel' %}</a>
         </div>
     </form>
 {% endblock body_content %}
