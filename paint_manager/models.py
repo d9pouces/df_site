@@ -6,19 +6,20 @@ from functools import cached_property
 from typing import Tuple, Type
 
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import Q
+from django.http import HttpRequest
 from django.template.loader import render_to_string
 from django.urls import reverse
+from django.utils.http import urlencode
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from df_site.models import AbstractPreferences
 from paint_manager.compare import delta_e, rgb2lab, srgb
-from paint_manager.utils import prepare_sorting_string
+from paint_manager.utils import prepare_sorting_string, preserve_request_query
 
 
 class Brand(models.Model):
@@ -118,7 +119,7 @@ class Paint(models.Model):
 
         verbose_name = _("peinture")
         verbose_name_plural = _("peintures")
-        ordering = ("color_r", "color_g", "color_b", "name", "packaging", "size")
+        ordering = ("sort_reference", "size")
 
     def __str__(self):
         """Return the paint as a string."""
@@ -141,10 +142,10 @@ class Paint(models.Model):
         """Return the color as a HTML small square."""
         """Display the color as a small square."""
         msg = (
-            "<div "
-            f'class="html-color-{height}" '
+            "<span "
+            f'class="d-inline-block html-color-{height}" '
             f'data-mpm-color="#{self.color_r:02x}{self.color_g:02x}{self.color_b:02x}"'
-            ">"
+            "></span>"
         )
         return mark_safe(msg)  # noqa S308
 
@@ -166,9 +167,16 @@ class Paint(models.Model):
         """Return the color as a RGB tuple."""
         return self.color_r, self.color_g, self.color_b
 
-    def similar_paints(self):
+    def similar_paints(self, request: HttpRequest, user=None):
         """Return the list of similar paints."""
-        user, brands, solvent = self.get_user_infos()
+        solvent = None
+        brands = []
+        if user and user.is_authenticated:
+            solvent = user.solvent
+            brands = list(user.preferred_brands.all())
+        if len(brands) == 0:
+            brands = list(Brand.objects.all())
+        print(brands)
 
         bound = 50
         references = defaultdict(lambda: set())
@@ -199,37 +207,28 @@ class Paint(models.Model):
         by_key = {x.paint.id: x for x in similair_paints}
         for user_paint in UserPaint.objects.filter(paint__in=propositions, user=user):
             by_key[user_paint.paint_id].user_paints.append(user_paint)
-        ctx = {"similar_paints": similair_paints}
+        preserved_filters = request.GET.get("_changelist_filters")
+        if preserved_filters:
+            preserved_filters = urlencode({"_changelist_filters": preserved_filters})
+            url_suffix = f"?{preserved_filters}"
+        else:
+            url_suffix = ""
+        ctx = {"similar_paints": similair_paints, "url_suffix": url_suffix}
         msg = render_to_string("paint_manager/similar_paints.html", context=ctx)
         return mark_safe(msg)  # noqa S308
-
-    similar_paints.short_description = _("Peintures similaires")
-
-    @staticmethod
-    def get_user_infos():
-        """Return the user preferences."""
-        user = get_user_model().objects.first()
-        solvent = None
-        brands = list(user.preferred_brands.all())
-        if user.solvent:
-            solvent = user.solvent
-        return user, brands, solvent
 
     def color_difference(self, other_paint: "Paint"):
         """Return the difference between the two paint."""
         return delta_e(self.lab, other_paint.lab)
 
-    def stock_level(self):
+    def stock_level(self, request, user):
         """Return the current level of all paints."""
-        user = get_user_model().objects.first()
         values = list(UserPaint.objects.filter(paint=self, user=user))
-        if not values:
-            return _("Peinture absente")
-        ctx = {"stock_level": values}
+        add_url = reverse("paint_add", kwargs={"pk": self.pk})
+        add_url = preserve_request_query(request, add_url)
+        ctx = {"stock_level": values, "paint": self, "add_url": add_url}
         msg = render_to_string("paint_manager/user_paint_stock.html", context=ctx)
         return mark_safe(msg)  # noqa S308
-
-    stock_level.short_description = _("Stock actuel")
 
     # noinspection PyUnusedLocal
     @staticmethod
@@ -251,6 +250,23 @@ class Paint(models.Model):
 
     display_reference.short_description = _("nom")
     display_reference.admin_order_field = "sort_reference"
+
+    def html_usage(self):
+        """Display the current remaining quantity."""
+        msg = ""
+        if hasattr(self, "remaining") and self.remaining is not None:
+            s = int(self.remaining / 10.0)
+            r = "▮" * s + "▯" * (10 - s)
+            c = "danger"
+            if s >= 7:
+                c = "success"
+            elif s >= 3:
+                c = "warning"
+            msg += f'<span class="text-{c}">{r}</span>'
+        return mark_safe(msg)  # noqa S308
+
+    html_usage.short_description = _("Stock")
+    html_usage.admin_order_field = "remaining"
 
 
 class Reference(models.Model):
@@ -365,7 +381,7 @@ class UserPaint(models.Model):
             c = "success"
         elif s >= 3:
             c = "warning"
-        msg = f'<span class="text-bg-{c}">{r}</span>'
+        msg = f'<span class="text-{c}">{r}</span>'
         return mark_safe(msg)  # noqa S308
 
     html_usage.short_description = _("Niveau")

@@ -1,7 +1,15 @@
-<ul>{% load i18n %}
+<ul class="list-unstyled">{% load i18n %}
     {% for state in stock_level %}
         <li>
             {{ state.html_usage }}{% if state.comment %} <em>{{ state.comment }}</em>{% endif %}
+        {% if state.buying_date %}({{ state.buying_date }}){% endif %}
+        </li>
+        {% empty %}
+        <li>
+        {% trans 'Peinture absente' %}
         </li>
     {% endfor %}
+<li>
+        <a class="btn btn-primary btn-sm" href="{{ add_url }}"><i class="fa fa-plus"></i> {% trans 'Ajouter' %}</a>
+</li>
 </ul>

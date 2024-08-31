@@ -7,5 +7,5 @@ from paint_manager.views import PaintAddView, PaintDetailView
 
 urlpatterns += [
     path("paint/<int:pk>/", PaintDetailView.as_view(), name="paint_detail"),
-    path("paint/add/", PaintAddView.as_view(), name="paint_add"),
+    path("paint/add/<int:pk>/", PaintAddView.as_view(), name="paint_add"),
 ]

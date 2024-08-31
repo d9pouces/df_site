@@ -14,7 +14,7 @@ from django.contrib.admin import SimpleListFilter as SimpleListFilterBase
 class ListFilterMixin:
     """A mixin for list filters, replacing the default template."""
 
-    template = "df_site/components/list_filter.html"
+    template = "df_components/list_filter.html"
 
 
 class SimpleListFilter(ListFilterMixin, SimpleListFilterBase):

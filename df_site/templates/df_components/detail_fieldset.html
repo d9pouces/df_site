@@ -25,7 +25,6 @@
                 {% for line in fieldset %}
                     <div
                         class="row
-
                             {% for field in line %}{% if field.field.name %} field-{{ field.field.name }}{% endif %}{% endfor %}">
                         {% for field in line %}
                             <div
@@ -35,7 +34,7 @@
                                     {{ field.field }}{{ field.label_tag }}
                                 {% else %}
                                     {{ field.label_tag }}
-                                    <span class="readonly">{{ field.contents }}</span>
+                                    {{ field.contents }}
                                 {% endif %}
                             </div>
                         {% endfor %}

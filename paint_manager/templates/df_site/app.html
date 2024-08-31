@@ -1,32 +1,19 @@
 {% extends "df_site/base.html" %}
-{% load i18n df_site websockets %}
+{% load i18n df_site websockets static %}
+
+{% block navbar_site_title %}
+    <a class="navbar-brand" href="{% if INDEX_URL %}{{ INDEX_URL }}{% else %}{% url 'index' %}{% endif %}">
+        <img class="w-25" src="{% static 'favicon/apple-touch-icon.png' %}" alt="{% trans 'Site logo' %}">
+    </a>
+{% endblock navbar_site_title %}
+
 
 {% block navbar_content %}
     <ul class="navbar-nav me-auto">
         <li class="nav-item">
-            <a class="nav-link active" href="{% url 'index' %}">{% trans 'Home' %}
+            <a class="nav-link active" href="{% if INDEX_URL %}{{ INDEX_URL }}{% else %}{% url 'index' %}{% endif %}">{% trans 'Home' %}
                 <span class="visually-hidden">(current)</span>
             </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'index' %}">{% trans "Paint manager" %}</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="{% url 'index' %}">Popup</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
-        </li>
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
-               role="button" aria-haspopup="true" aria-expanded="false">Dropdown</a>
-            <div class="dropdown-menu">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <a class="dropdown-item" href="#">Something else here</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Separated link</a>
-            </div>
         </li>
     </ul>
 {% endblock navbar_content %}

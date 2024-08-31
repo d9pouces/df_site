@@ -24,7 +24,7 @@ class ModelDetailComponent(ModelComponent):
     def __init__(
         self,
         model: Type[models.Model],
-        template: str = "df_site/components/detail.html",
+        base_template: str = "detail.html",
         inlines: List = None,
         fields=None,
         exclude=None,
@@ -33,7 +33,7 @@ class ModelDetailComponent(ModelComponent):
         filter_horizontal=(),
     ):
         """Initialize the component."""
-        super().__init__(model=model, template=template)
+        super().__init__(model, base_template)
         self.inlines = inlines or []
         self.fields = fields
         self.exclude = exclude
@@ -119,7 +119,7 @@ class ModelDetailView(DetailView):
 
     component: ModelDetailComponent
     model: Type[models.Model]
-    component_template: str = "df_site/components/detail.html"
+    component_template: str = "detail.html"
     inlines: List = None
     fields = None
     exclude = None
@@ -132,7 +132,7 @@ class ModelDetailView(DetailView):
         """Main entry point for a request-response process."""
         cls.component = ModelDetailComponent(
             model=cls.model,
-            template=cls.component_template,
+            base_template=cls.component_template,
             inlines=cls.inlines,
             fields=cls.fields,
             exclude=cls.exclude,

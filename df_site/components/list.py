@@ -27,11 +27,18 @@ class ModelListChangeList(ChangeList):
     formset = None
     paginator: Paginator
 
+    def __init__(self, request: HttpRequest, *args, **kwargs):
+        """Initialize the ChangeList."""
+        super().__init__(request, *args, **kwargs)
+        self.request: HttpRequest = request
+
     def url_for_result(self, result: models.Model):
         """Return the URL for a result, trying to use the get_absolute_url method."""
         if hasattr(result, "get_absolute_url"):
-            return result.get_absolute_url()
-        return f"/{self.opts.app_label}/{self.opts.model_name}/{result.pk}/show/"
+            url = result.get_absolute_url()
+        else:
+            url = f"/{self.opts.app_label}/{self.opts.model_name}/{result.pk}/show/"
+        return url
 
 
 class ModelListComponent(ModelComponent):
@@ -41,12 +48,13 @@ class ModelListComponent(ModelComponent):
     all_var = ALL_VAR
     order_var = ORDER_VAR
     search_var = SEARCH_VAR
+    changelist_filters_var = "_changelist_filters"
     list_editable: List[str] = []
 
     def __init__(
         self,
         model: Type[models.Model],
-        template: str = "df_site/components/list.html",
+        base_template: str = "list.html",
         list_select_related: Optional[List[str]] = None,
         list_display: List[str] = None,
         list_display_links: List[str] = None,
@@ -66,7 +74,7 @@ class ModelListComponent(ModelComponent):
         filters_title: str = _("Filters"),
     ):
         """Create a new list component."""
-        super().__init__(model, template)
+        super().__init__(model, base_template)
         self.list_select_related: Optional[List[str]] = list_select_related
         self.list_display: List[str] = list_display or ["__str__"]
         self.list_display_links: List[str] = list_display_links or []
@@ -97,19 +105,39 @@ class ModelListComponent(ModelComponent):
         return cls(
             request,
             self.model,
-            self.list_display,
-            self.list_display_links,
-            self.list_filter,
-            self.date_hierarchy,
-            self.search_fields,
+            self.get_list_display(request, **kwargs),
+            self.get_list_display_links(request, **kwargs),
+            self.get_list_filter(request, **kwargs),
+            self.get_date_hierarchy(request, **kwargs),
+            self.get_search_fields(request, **kwargs),
             self.list_select_related,
             self.list_per_page,
             self.list_max_show_all,
             self.list_editable,
             ModelAdminWrapper(self, kwargs),
             self.sortable_by,
-            self.search_help_text,
+            self.get_search_help_text(request, **kwargs),
         )
+
+    # noinspection PyUnusedLocal
+    def get_date_hierarchy(self, request: HttpRequest, **kwargs):
+        """Return the date hierarchy, depending on the request."""
+        return self.date_hierarchy
+
+    # noinspection PyUnusedLocal
+    def get_search_help_text(self, request: HttpRequest, **kwargs):
+        """Return the text displayed before the search input."""
+        return self.search_help_text
+
+    # noinspection PyUnusedLocal
+    def get_list_display_links(self, request: HttpRequest, **kwargs):
+        """Return the list of fields with the link to the object."""
+        return self.list_display_links
+
+    # noinspection PyUnusedLocal
+    def get_list_display(self, request: HttpRequest, **kwargs):
+        """Return the list of fields to display."""
+        return self.list_display
 
     def get_queryset(self, request: HttpRequest, **kwargs) -> models.QuerySet:
         """Return the queryset to use for this component."""
@@ -120,13 +148,12 @@ class ModelListComponent(ModelComponent):
             qs = qs.select_related(*self.list_select_related)
         return qs
 
-    # noinspection PyMethodMayBeStatic
     def get_preserved_filters(self, request: HttpRequest):
         """Return the preserved filters querystring."""
         # noinspection PyArgumentList
         preserved_filters = request.GET.urlencode()
         if preserved_filters:
-            return urlencode({"_changelist_filters": preserved_filters})
+            return urlencode({self.changelist_filters_var: preserved_filters})
         return ""
 
     # noinspection PyUnusedLocal
@@ -144,7 +171,7 @@ class ModelListComponent(ModelComponent):
         """Mimic the behavior of the ModelAdmin."""
         return False
 
-    def lookup_allowed(self, lookup, value, request=None):
+    def lookup_allowed(self, lookup, value, request: HttpRequest = None, **kwargs):
         """Mimic the behavior of the ModelAdmin."""
         model = self.model
         # Check FKey lookups that are allowed, so that popups produced by
@@ -186,10 +213,10 @@ class ModelListComponent(ModelComponent):
         if len(relation_parts) <= 1:
             # Either a local field filter, or no fields at all.
             return True
-        valid_lookups = {self.date_hierarchy}
+        valid_lookups = {self.get_date_hierarchy(request, **kwargs)}
         # RemovedInDjango60Warning: when the deprecation ends, replace with:
         # for filter_item in self.get_list_filter(request):
-        list_filter = self.get_list_filter(request) if request is not None else self.list_filter
+        list_filter = self.get_list_filter(request, **kwargs) if request is not None else self.list_filter
         for filter_item in list_filter:
             if isinstance(filter_item, type) and issubclass(filter_item, SimpleListFilter):
                 valid_lookups.add(filter_item.parameter_name)
@@ -220,7 +247,7 @@ class ModelListComponent(ModelComponent):
         return self.ordering or ()
 
     # noinspection PyUnusedLocal
-    def get_search_fields(self, request: HttpRequest):
+    def get_search_fields(self, request: HttpRequest, **kwargs):
         """Return a sequence containing the fields to be searched."""
         return self.search_fields
 
@@ -366,13 +393,21 @@ class ModelAdminWrapper:
         """Call the get_queryset method with kwargs."""
         return self.model_admin.get_queryset(request, **self.kwargs)
 
+    def get_ordering(self, request):
+        """Call the get_ordering method with kwargs."""
+        return self.model_admin.get_ordering(request, **self.kwargs)
+
     def get_list_filter(self, request):
         """Call the get_list_filter method with kwargs."""
         return self.model_admin.get_list_filter(request, **self.kwargs)
 
-    def get_ordering(self, request):
-        """Call the get_ordering method with kwargs."""
-        return self.model_admin.get_ordering(request, **self.kwargs)
+    def get_date_hierarchy(self, request):
+        """Call the get_date_hierarchy method with kwargs."""
+        return self.model_admin.get_date_hierarchy(request, **self.kwargs)
+
+    def lookup_allowed(self, lookup, value, request: HttpRequest):
+        """Call the lookup_allowed method with kwargs."""
+        return self.model_admin.lookup_allowed(lookup, value, request=request, **self.kwargs)
 
     def __getattr__(self, item):
         """Delegate all other calls to the ModelListComponent."""

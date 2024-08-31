@@ -1,6 +1,6 @@
 {% load i18n df_site %}
 <details data-filter-title="{{ title }}" open class="list-group list-group-flush">
-    <summary class="list-group-item list-group-item-light">
+    <summary class="list-group-item list-group-item-light bg-body-secondary">
         {% blocktranslate with filter_title=title %} By {{ filter_title }} {% endblocktranslate %}
     </summary>
     {% for choice in choices %}
