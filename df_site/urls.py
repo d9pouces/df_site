@@ -12,6 +12,7 @@ from df_site.views import (
     csp_report_view,
     security_gpg_view,
     site_webmanifest_view,
+    thumbnail_view,
 )
 
 urlpatterns = [
@@ -27,6 +28,7 @@ urlpatterns = [
     path("browserconfig.xml", BrowserConfigView.as_view(), name="browserconfig"),
     path(settings.CSP_REPORT_URI[1:], csp_report_view, name="csp_report"),
     path("users/", include("df_site.users.urls", namespace="users")),
+    path("thumbnails/<path:path>", thumbnail_view, name="thumbnails"),
     path("messages/", include("df_site.postman.urls", namespace="postman")),
     path("cookies/", include("cookie_consent.urls")),
     path(

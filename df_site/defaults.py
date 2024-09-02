@@ -30,6 +30,24 @@ DF_SITE_THEMES: List[Tuple[str, str, str]] = [  # ('theme name', 'theme label', 
 DF_ANDROID_THEME_COLOR = "#ffffff"
 DF_ANDROID_BACKGROUND_COLOR = "#ffffff"
 DF_MICROSOFT_BACKGROUND_COLOR = "#da532c"
+DF_SAFARI_PINNED_COLOR = "#5bbad5"
+
+DF_IMAGE_THUMBNAILS = {
+    "media": {
+        "src_storage": "default",
+        "dst_storage": "staticfiles",
+        "cache": "default",
+        "prefix": "T",
+        "reversible": True,
+    },
+    "static": {
+        "src_storage": "staticfiles",
+        "dst_storage": "staticfiles",
+        "cache": "default",
+        "prefix": "S",
+        "reversible": True,
+    },
+}
 
 CSP_IMG_SRC = ["'self'", "data: w3.org/svg/2000", "https://log.pinterest.com"]
 # "https://log.pinterest.com" is used for Pinterest

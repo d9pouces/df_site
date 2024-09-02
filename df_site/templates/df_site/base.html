@@ -29,11 +29,11 @@
         <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
         <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
         <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
-        <link rel="manifest" href="{% abs_url 'site_webmanifest' %}">
-        <link rel="mask-icon" href="{% static 'favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
+        <link rel="mask-icon" href="{% static 'favicon/safari-pinned-tab.svg' %}" color="{{ DF_SAFARI_PINNED_COLOR }}">
         <meta name="msapplication-TileColor" content="{{ DF_MICROSOFT_BACKGROUND_COLOR }}">
-        <meta name="msapplication-config" content="{% abs_url 'browserconfig' %}"/>
         <meta name="theme-color" content="{{ DF_ANDROID_THEME_COLOR }}">
+        <link rel="manifest" href="{% abs_url 'site_webmanifest' %}">
+        <meta name="msapplication-config" content="{% abs_url 'browserconfig' %}"/>
     {% endblock head_meta_global %}
     {% block head_meta_local %}
         <meta property="twitter:creator" content="{{ DF_SITE_X_ACCOUNT }}"/>

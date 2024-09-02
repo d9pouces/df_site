@@ -12,8 +12,10 @@ from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
+from django.views.static import serve
 
 from df_site.templatetags.df_site import abs_url
+from df_site.templatetags.images import CachedImage
 
 logger = logging.getLogger(__name__)
 
@@ -24,14 +26,13 @@ def site_webmanifest_view(request: HttpRequest) -> HttpResponse:
         "name": settings.DF_SITE_TITLE,
         "short_name": settings.DF_SITE_TITLE,
         "icons": [
-            {"src": static("favicon/android-chrome-1192x192.png"), "sizes": "192x192", "type": "image/png"},
+            {"src": static("favicon/android-chrome-192x192.png"), "sizes": "192x192", "type": "image/png"},
             {"src": static("favicon/android-chrome-512x512.png"), "sizes": "512x512", "type": "image/png"},
         ],
         "theme_color": settings.DF_ANDROID_THEME_COLOR,
         "background_color": settings.DF_ANDROID_BACKGROUND_COLOR,
         "display": "standalone",
     }
-
     return JsonResponse(result)
 
 
@@ -108,3 +109,11 @@ class HumansTxtView(TemplateView):
         context["humans_keywords"] = settings.DF_SITE_KEYWORDS
         context["humans_update"] = now
         return context
+
+
+def thumbnail_view(request: HttpRequest, path: str) -> HttpResponse:
+    """Return a thumbnail image."""
+    img = CachedImage.from_target_path(path)
+    if not img.src_storage_obj.exists(path):
+        img.process()
+    return serve(request, path=path, document_root=settings.STATIC_ROOT)

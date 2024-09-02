@@ -68,3 +68,4 @@ BRAND_ICONS = {
     "yandex": "yandex",
 }
 INT_RE = re.compile(r"^(0|[1-9]\d*)$")
+SIZE_RE = re.compile(r"^([1-9]\d*)x([1-9]\d*)$")

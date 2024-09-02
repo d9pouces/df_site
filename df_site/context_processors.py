@@ -54,6 +54,8 @@ def global_site_infos(request: HttpRequest, current_date: Optional[datetime.date
         "DF_SITE_SOCIAL_NETWORKS": settings.DF_SITE_SOCIAL_NETWORKS.items(),
         "DF_COLOR_THEMES": settings.DF_SITE_THEMES,
         "DF_MICROSOFT_BACKGROUND_COLOR": settings.DF_MICROSOFT_BACKGROUND_COLOR,
+        "DF_ANDROID_THEME_COLOR": settings.DF_ANDROID_THEME_COLOR,
+        "DF_SAFARI_PINNED_COLOR": settings.DF_SAFARI_PINNED_COLOR,
         "COLOR_THEME": color_theme,
         "DF_RIBBONS": ribbons,
     }
