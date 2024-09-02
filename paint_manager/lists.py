@@ -59,7 +59,6 @@ class PaintListComponent(ModelListComponent):
                 "html_usage",
             ],
             list_filter=[
-                ("reference", IsOwnedFieldListFilter),
                 ("brand", RelatedFieldListFilter),
                 ("finish", ChoicesFieldListFilter),
                 ("solvent", ChoicesFieldListFilter),
@@ -73,6 +72,8 @@ class PaintListComponent(ModelListComponent):
 
     def get_list_filter(self, request, **kwargs):
         """Return the list of available filters."""
+        if request.user.is_authenticated:
+            return [("reference", IsOwnedFieldListFilter)] + self.list_filter
         return self.list_filter
 
     def get_queryset(self, request: HttpRequest, **kwargs) -> models.QuerySet:
