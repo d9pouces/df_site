@@ -14,8 +14,11 @@ class PaintManagerConfig(AppConfig):
 
     def ready(self):
         """Import signals and connect them."""
+        from django.conf import settings
+
         from paint_manager.initialization.load import database_initialization
         from paint_manager.models import Paint
 
         pre_save.connect(Paint.update_sort_name, sender=self)
-        post_migrate.connect(database_initialization, sender=self)
+        if not settings.TESTING:
+            post_migrate.connect(database_initialization, sender=self)

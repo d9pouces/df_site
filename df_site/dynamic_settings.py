@@ -11,3 +11,11 @@ def allauth_signup_form(values: dict[str, Any]) -> Optional[str]:
 
 
 allauth_signup_form.required_settings = ["RECAPTCHA_PRIVATE_KEY", "RECAPTCHA_PUBLIC_KEY"]
+
+
+def are_tests_running(values: dict[str, Any]) -> bool:
+    """Return True if we are running unit tests."""
+    return "testserver" in values.get("ALLOWED_HOSTS", [])
+
+
+are_tests_running.required_settings = ["ALLOWED_HOSTS"]

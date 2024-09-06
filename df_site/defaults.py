@@ -5,7 +5,7 @@ from typing import List, Tuple
 from df_config.config.dynamic_settings import CallableSetting, SettingReference
 from django.utils.translation import gettext_lazy as _
 
-from df_site.dynamic_settings import allauth_signup_form
+from df_site.dynamic_settings import allauth_signup_form, are_tests_running
 
 DF_SITE_TITLE = "Technological proof of concept"
 DF_SITE_SECURITY_EMAIL = SettingReference("ADMIN_EMAIL")
@@ -80,6 +80,7 @@ DF_TEMPLATE_CONTEXT_PROCESSORS = [
     "df_site.context_processors.global_site_infos",
     "django.template.context_processors.request",
 ]
+TESTING = CallableSetting(are_tests_running)
 RECAPTCHA_PUBLIC_KEY = ""
 RECAPTCHA_PRIVATE_KEY = ""
 DF_INSTALLED_APPS = [

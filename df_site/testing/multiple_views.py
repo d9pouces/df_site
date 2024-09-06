@@ -6,7 +6,7 @@ Otherwise, you can also provide a RequestTester (especially to provide GET or PO
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Tuple, Type, TypeAlias, Union
+from typing import Dict, List, Optional, Tuple, Type, TypeAlias, Union
 from urllib.parse import urlencode
 
 from django.conf import settings
@@ -16,6 +16,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AbstractUser, AnonymousUser
 from django.contrib.messages.middleware import MessageMiddleware
 from django.contrib.sessions.middleware import SessionMiddleware
+from django.core.exceptions import PermissionDenied
 from django.db import models
 from django.http import Http404, HttpResponse, SimpleCookie
 from django.middleware.csrf import get_token
@@ -98,7 +99,7 @@ class TestMultipleViews(TestCase):
         user_kwargs.update(kwargs)
         return get_user_model().objects.create_user(username=name, **user_kwargs)
 
-    def request_factory(
+    def create_request(
         self,
         url,
         *args,
@@ -141,7 +142,7 @@ class TestMultipleViews(TestCase):
     def check_url_patterns(
         self,
         url_patterns: List[Tuple[str, URLPattern]],
-        common_kwargs,
+        common_kwargs: Dict[str, str],
         expected_responses: Dict[str, Dict[Optional[str], ExpectedResponses]],
         display_prefix: str = "",
     ):
@@ -156,12 +157,11 @@ class TestMultipleViews(TestCase):
         """
         failures = []  # list of (url_pattern, ps, exception)
         for namespace, url_pattern in url_patterns:
-            url_name = url_pattern.name
-            if url_name:
-                view_name = f"{namespace}{url_name}"
+            if url_pattern.name:
+                view_name = f"{namespace}{url_pattern.name}"
             else:
                 view_name = None
-                logger.info("unnamed view: %r", url_pattern.callback)
+            url_name = self.format_url_pattern(url_pattern)
             view = url_pattern.callback
             provided_view_kwargs = url_pattern.default_args
             # "kwargs" argument provided to path()
@@ -171,8 +171,8 @@ class TestMultipleViews(TestCase):
                 arg_names = list(url_pattern.pattern.regex.groupindex)
             reverse_kwargs = {k: common_kwargs[k] for k in arg_names if k in common_kwargs}
             for user in self.get_users():
-                user_key = None if user.is_anonymous else user.username
-                request_testers_: ExpectedResponses = expected_responses.get(url_name, {}).get(user_key, Http404)
+                username = None if user.is_anonymous else user.username
+                request_testers_: ExpectedResponses = expected_responses.get(url_name, {}).get(username, Http404)
                 if not isinstance(request_testers_, list):
                     request_testers: List[ExpectedResponse] = [request_testers_]
                 else:
@@ -198,19 +198,30 @@ class TestMultipleViews(TestCase):
                         )
                         failure = (
                             url_pattern,
-                            user_key,
+                            username,
                             exc,
                             failed_url,
                         )
                         failures.append(failure)
-        for url_pattern, user_key, e, url in failures:
-            pattern = url_pattern.name or repr(url_pattern.callback)
-            username = user_key
-            excp_type = type(e)
+        for url_pattern, username, e, url in failures:
+            pattern = self.format_url_pattern(url_pattern)
+            if username is None:
+                username = "AnonymousUser"
+            else:
+                username = f"user {username}"
             base_url = settings.SERVER_BASE_URL[:-1]
-            msg = f"{display_prefix}Exception in {pattern} with user {username}: {excp_type} ({base_url}{url})."
+            msg = f"{display_prefix}Exception in {pattern} with {username}: {e} ({base_url}{url})."
             print(msg)
         self.assertEqual(0, len(failures))
+
+    @staticmethod
+    def format_url_pattern(url_pattern) -> str:
+        """Return a string representation of the provided URL pattern."""
+        if url_pattern.name:
+            return url_pattern.name
+        if isinstance(url_pattern.pattern, RoutePattern):
+            return url_pattern.pattern._route
+        return url_pattern.pattern._regex
 
 
 class TestModelAdmin(TestMultipleViews):
@@ -238,37 +249,36 @@ class TestModelAdmin(TestMultipleViews):
 
     checked_model_admins = set()
     _prefix = "%(app_label)s_%(model_name)s_"
-    _prefix2 = default_site.name + ":"
     expected_responses: Dict[str, Dict[Optional[str], ExpectedResponses]] = {
         f"{_prefix}changelist": {
-            None: 200,
-            "staff": 200,
+            None: 302,
+            "staff": PermissionDenied,
             "admin": 200,
         },
         f"{_prefix}add": {
-            None: 200,
-            "staff": 200,
+            None: 302,
+            "staff": PermissionDenied,
             "admin": 200,
         },
         f"{_prefix}history": {
-            None: 200,
-            "staff": 200,
+            None: 302,
+            "staff": PermissionDenied,
             "admin": 200,
         },
         f"{_prefix}delete": {
-            None: 200,
-            "staff": 200,
+            None: 302,
+            "staff": PermissionDenied,
             "admin": 200,
         },
         f"{_prefix}change": {
-            None: 200,
-            "staff": 200,
+            None: 302,
+            "staff": PermissionDenied,
             "admin": 200,
         },
-        f"{_prefix2}{_prefix}change": {
-            None: 200,
-            "staff": 200,
-            "admin": 200,
+        "<path:object_id>/": {
+            None: 302,
+            "staff": 302,
+            "admin": 302,
         },
     }
 
@@ -278,7 +288,7 @@ class TestModelAdmin(TestMultipleViews):
     def check_model_admin(
         self,
         model_admin: Union[Type[admin.ModelAdmin], Type[models.Model]],
-        common_kwargs: Dict[str, Any],
+        common_kwargs: Dict[str, str],
         display_prefix: str = "",
         expected_responses: Dict[str, Dict[Optional[str], ExpectedResponses]] = None,
     ):
@@ -292,7 +302,7 @@ class TestModelAdmin(TestMultipleViews):
         :return:
         """
         if isinstance(model_admin, type) and issubclass(model_admin, models.Model):
-            model_admin = default_site.get_modeladmin(model_admin)
+            model_admin = default_site.get_model_admin(model_admin)
 
         TestModelAdmin.checked_model_admins.add(model_admin)
         base_expected_responses = self.get_expected_responses(model_admin, raw_expected_responses=expected_responses)
@@ -331,7 +341,7 @@ class TestModelAdmin(TestMultipleViews):
         return expected_responses
 
     # noinspection PyMethodMayBeStatic
-    def get_admin_urls(self, model_admin: admin.ModelAdmin):
+    def get_admin_urls(self, model_admin: admin.ModelAdmin) -> List[Tuple[str, URLPattern]]:
         """Return the list of all URLs in this model_admin."""
         return [("admin:", x) for x in model_admin.get_urls()]
 
@@ -349,5 +359,7 @@ class TestModel(TestModelAdmin):
             obj = self.get_object()
         except NotImplementedError as e:
             self.skipTest(str(e))
-        common_kwargs = {"object_id": obj.pk}
+        if obj._state.adding:
+            obj.save()
+        common_kwargs = {"object_id": str(obj.pk)}
         self.check_model_admin(obj.__class__, common_kwargs=common_kwargs, display_prefix="")

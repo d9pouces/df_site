@@ -146,7 +146,7 @@ class RequestTester:
             url = "/unnamed/view"
         method = self.get_request_method(test_case, view_name, user)
         request_kwargs = self.get_request_kwargs(test_case, view_name, user)
-        request = test_case.request_factory(url, method=method, **request_kwargs)
+        request = test_case.create_request(url, method=method, **request_kwargs)
         if self.files_data:
             request.FILES.update(self.files_data)
         request.user = user
