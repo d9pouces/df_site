@@ -248,29 +248,29 @@ class TestModelAdmin(TestMultipleViews):
     """
 
     checked_model_admins = set()
-    _prefix = "%(app_label)s_%(model_name)s_"
+    placeholders = "%(app_label)s_%(model_name)s_"
     expected_responses: Dict[str, Dict[Optional[str], ExpectedResponses]] = {
-        f"{_prefix}changelist": {
+        f"{placeholders}changelist": {
             None: 302,
             "staff": PermissionDenied,
             "admin": 200,
         },
-        f"{_prefix}add": {
+        f"{placeholders}add": {
             None: 302,
             "staff": PermissionDenied,
             "admin": 200,
         },
-        f"{_prefix}history": {
+        f"{placeholders}history": {
             None: 302,
             "staff": PermissionDenied,
             "admin": 200,
         },
-        f"{_prefix}delete": {
+        f"{placeholders}delete": {
             None: 302,
             "staff": PermissionDenied,
             "admin": 200,
         },
-        f"{_prefix}change": {
+        f"{placeholders}change": {
             None: 302,
             "staff": PermissionDenied,
             "admin": 200,
@@ -361,5 +361,9 @@ class TestModel(TestModelAdmin):
             self.skipTest(str(e))
         if obj._state.adding:
             obj.save()
-        common_kwargs = {"object_id": str(obj.pk)}
+        common_kwargs = self.get_common_kwargs_for_object(obj)
         self.check_model_admin(obj.__class__, common_kwargs=common_kwargs, display_prefix="")
+
+    def get_common_kwargs_for_object(self, obj) -> Dict[str, str]:
+        """Return the common kwargs for all views of the provided object."""
+        return {"object_id": str(obj.pk)}
