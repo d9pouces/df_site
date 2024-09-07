@@ -17,6 +17,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.docker" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
       <excludeFolder url="file://$MODULE_DIR$/django_data" />
+      <excludeFolder url="file://$MODULE_DIR$/.tox" />
     </content>
     <orderEntry type="jdk" jdkName="Poetry (df_site)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

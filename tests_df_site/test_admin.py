@@ -20,6 +20,8 @@ class TestAlertRibbonAdmin(TestModel):
 class TestPreferencesUserAdmin(TestModel):
     """Test the PreferencesUser admin."""
 
+    model = PreferencesUser
+
     expected_responses = {
         "auth_user_password_change": {
             None: 302,
@@ -30,13 +32,13 @@ class TestPreferencesUserAdmin(TestModel):
 
     def test_model_admin(self):
         """Test the model admin."""
-        if get_user_model() != PreferencesUser:
-            self.skipTest("User model is not PreferencesUser")
+        if get_user_model() != self.model:
+            self.skipTest(f"User model is not {self.model}")
         super().test_model_admin()
 
     def get_object(self):
         """Return an object to test."""
-        return PreferencesUser(username="Test user")
+        return self.model(username="Test user")
 
     def get_common_kwargs_for_object(self, obj) -> Dict[str, str]:
         """Return the common kwargs for all views of the provided object."""

@@ -55,6 +55,7 @@ redis = "^5.0.1"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
+coverage = "^7.6.1"
 daphne = "^4.1.2"
 django-debug-toolbar = "^4.4.6"
 djt-csp = "^0.9.9"

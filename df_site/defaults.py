@@ -5,8 +5,9 @@ from typing import List, Tuple
 from df_config.config.dynamic_settings import CallableSetting, SettingReference
 from django.utils.translation import gettext_lazy as _
 
-from df_site.dynamic_settings import allauth_signup_form, are_tests_running
+from df_site.dynamic_settings import allauth_signup_form, are_tests_running, load_tox_environment
 
+load_tox_environment()
 DF_SITE_TITLE = "Technological proof of concept"
 DF_SITE_SECURITY_EMAIL = SettingReference("ADMIN_EMAIL")
 DF_SITE_SECURITY_LANGUAGE_CODE = SettingReference("LANGUAGE_CODE")

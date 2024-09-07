@@ -1,9 +1,9 @@
 """Admin classes for the df_site app."""
 
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
 from django.utils.translation import gettext as _
 
+from df_site.admin import PreferencesUserAdmin
 from paint_manager.models import Brand, PaintOwner
 
 
@@ -19,7 +19,7 @@ class BrandAdmin(admin.ModelAdmin):
 
 
 @admin.register(PaintOwner)
-class PaintOwnerAdmin(UserAdmin):
+class PaintOwnerAdmin(PreferencesUserAdmin):
     """Admin class for the paint owner model."""
 
     fieldsets = (
@@ -51,6 +51,6 @@ class PaintOwnerAdmin(UserAdmin):
                 ),
             },
         ),
-        (_("Important dates"), {"fields": ("last_login", "date_joined")}),
+        (_("Important dates"), {"fields": (("last_login", "date_joined"),)}),
     )
     autocomplete_fields = ["preferred_brands"]

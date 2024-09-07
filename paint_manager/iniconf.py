@@ -32,7 +32,7 @@ INI_MAPPING = [
         env_name="SERVER_URL",
     ),
     IntegerConfigField(
-        None,
+        "global.listen_port",
         "LISTEN_PORT",
         help_str="port to listen to (force to listen on 0.0.0.0:$PORT).",
         env_name="PORT",
@@ -43,9 +43,9 @@ INI_MAPPING = [
         help_str="default to Europe/Paris",
         env_name="TIME_ZONE",
     ),
-    CharConfigField(None, "DATABASE_URL", help_str="URL of the database", env_name="DATABASE_URL"),
+    CharConfigField("database.url", "DATABASE_URL", help_str="URL of the database", env_name="DATABASE_URL"),
     CharConfigField(
-        None,
+        "global.email_host_url",
         "EMAIL_HOST_URL",
         help_str="SMTP server for sending admin emails. \n"
         "smtp+tls://account@example.com:password@smtp.example.com:587/",
@@ -66,7 +66,7 @@ INI_MAPPING = [
         env_name="SENTRY_DSN",
     ),
     CharConfigField(
-        None,
+        "global.redis_url",
         "COMMON_REDIS_URL",
         help_str="Redis database URL, for all redis things.",
         env_name="REDIS_URL",
