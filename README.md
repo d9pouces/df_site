@@ -12,10 +12,6 @@ It offers a template based on Bootstrap5 with the required views for:
 - a configurable object lists with sorting, pagination and filters (similar to the Django admin list views) integrable in any template
 - a configurable object detail view similar to the Django admin detail view
 
-### Technologies
-
-https://www.saaspegasus.com/guides/modern-javascript-for-django-developers/client-server-architectures/
-
 ## Frontend
 
 - [X] [SCSS](https://sass-lang.com/): Bootstrap uses SCSS
@@ -160,3 +156,7 @@ CSS Validator, Link Checker, JS Validator
 - [X] [PostgreSQL](https://www.postgresql.org/)
 - [X] [Redis](https://redis.io/)
 - [X] [minio](https://min.io/)
+
+### Technologies
+
+https://www.saaspegasus.com/guides/modern-javascript-for-django-developers/client-server-architectures/
