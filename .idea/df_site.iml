@@ -21,6 +21,7 @@
     </content>
     <orderEntry type="jdk" jdkName="Poetry (df_site)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="ModelPaintManager" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />
