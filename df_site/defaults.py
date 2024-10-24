@@ -176,9 +176,9 @@ PIPELINE = {
             "crossorigin": "anonymous",
         },
     },
-    "CSS_COMPRESSOR": "pipeline.compressors.yuglify.YuglifyCompressor",
-    "JS_COMPRESSOR": "pipeline.compressors.uglifyjs.UglifyJSCompressor",
-    "COMPILERS": [],
+    "CSS_COMPRESSOR": SettingReference("PIPELINE_CSS_COMPRESSOR"),
+    "JS_COMPRESSOR": SettingReference("PIPELINE_JS_COMPRESSOR"),
+    "COMPILERS": SettingReference("PIPELINE_COMPILERS"),
 }
 SOCIALACCOUNT_EMAIL_AUTHENTICATION_AUTO_CONNECT = True
 SOCIALACCOUNT_LOGIN_ON_GET = True
