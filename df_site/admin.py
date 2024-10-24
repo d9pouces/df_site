@@ -93,7 +93,7 @@ else:
 class PreferencesUserAdmin(UserAdmin):
     """Admin class for the preferences user model."""
 
-    inlines = [EmailAddressInline, AuthenticatorInline, SocialAccountInline, UserSessionInline]
+    inlines = []
     list_display = ("username", "email", "first_name", "last_name", "is_staff", "date_joined")
     list_filter = ("is_staff", "is_superuser", "is_active", "date_joined", "groups")
     readonly_fields = ["last_login", "date_joined"]
@@ -120,7 +120,7 @@ class PreferencesUserAdmin(UserAdmin):
 
     def get_inlines(self, request, obj):
         """Return inlines excluding those that correspond to apps not installed."""
-        inlines = super().get_inlines(request, obj)
+        inlines = [EmailAddressInline, AuthenticatorInline, SocialAccountInline, UserSessionInline]
         if obj is None:
             return []
         inlines = [x for x in inlines if x is not None]
