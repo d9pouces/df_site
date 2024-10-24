@@ -1,7 +1,8 @@
 df_site
 ---------
 
-Proof of concept for a site that uses some technologies I want to learn.
+A single Django app that contains many features and tools to create a website.
+
 
 ### Technologies
 
