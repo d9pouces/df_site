@@ -13,7 +13,7 @@ def websocket_middleware(get_response):
 
         response: HttpResponse = get_response(request)
         # noinspection PyUnresolvedReferences
-        if not request.has_websocket_topics:
+        if hasattr(request, "has_websocket_topics") and not request.has_websocket_topics:
             set_websocket_topics(request)
         return response
 
