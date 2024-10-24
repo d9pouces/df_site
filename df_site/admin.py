@@ -2,10 +2,22 @@
 
 from functools import cached_property
 
-from allauth.account.models import EmailAddress
-from allauth.mfa.models import Authenticator
-from allauth.socialaccount.models import SocialAccount
-from allauth.usersessions.models import UserSession
+try:
+    from allauth.account.models import EmailAddress
+except ImportError:
+    EmailAddress = None
+try:
+    from allauth.mfa.models import Authenticator
+except ImportError:
+    Authenticator = None
+try:
+    from allauth.socialaccount.models import SocialAccount
+except ImportError:
+    SocialAccount = None
+try:
+    from allauth.usersessions.models import UserSession
+except ImportError:
+    UserSession = None
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
@@ -111,13 +123,13 @@ class PreferencesUserAdmin(UserAdmin):
     def excluded_inlines(self):
         """Exclude inlines of which the corresponding app is not installed."""
         excluded = []
-        if "allauth.mfa" not in settings.INSTALLED_APPS:
+        if "allauth.mfa" not in settings.INSTALLED_APPS or Authenticator is None:
             excluded.append(AuthenticatorInline)
-        if "allauth.socialaccount" not in settings.INSTALLED_APPS:
+        if "allauth.socialaccount" not in settings.INSTALLED_APPS or SocialAccount is None:
             excluded.append(SocialAccountInline)
-        if "allauth.usersessions" not in settings.INSTALLED_APPS:
+        if "allauth.usersessions" not in settings.INSTALLED_APPS or UserSession is None:
             excluded.append(UserSessionInline)
-        if "allauth.account" not in settings.INSTALLED_APPS:
+        if "allauth.account" not in settings.INSTALLED_APPS or EmailAddress is None:
             excluded.append(EmailAddressInline)
         return excluded
 

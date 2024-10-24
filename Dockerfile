@@ -15,6 +15,7 @@ COPY ./LICENSE /src/LICENSE
 COPY CHANGELOG.md /src/CHANGELOG
 COPY ./df_site /src/df_site
 WORKDIR /src
+RUN chown -R df_site: /src
 USER df_site
 RUN python3 -m pip install poetry \
     && python3 -m poetry build
