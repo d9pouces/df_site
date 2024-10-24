@@ -130,7 +130,7 @@ importers:
         version: 6.5.2
       '@liqd/ckeditor5-file-uploader':
         specifier: github:liqd/ckeditor5-file-uploader#v0.0.3
-        version: https://codeload.github.com/liqd/ckeditor5-file-uploader/tar.gz/a23c49b752fdfaa91453b711fc8998d9598c3d7c(ckeditor5@42.0.2)
+        version: git+https://git@github.com:liqd/ckeditor5-file-uploader.git#a23c49b752fdfaa91453b711fc8998d9598c3d7c(ckeditor5@42.0.2)
       bootstrap:
         specifier: ^5.3.3
         version: 5.3.3(@popperjs/core@2.11.8)
@@ -589,8 +589,8 @@ packages:
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
 
-  ? '@liqd/ckeditor5-file-uploader@https://codeload.github.com/liqd/ckeditor5-file-uploader/tar.gz/a23c49b752fdfaa91453b711fc8998d9598c3d7c'
-  : resolution: {tarball: https://codeload.github.com/liqd/ckeditor5-file-uploader/tar.gz/a23c49b752fdfaa91453b711fc8998d9598c3d7c}
+  '@liqd/ckeditor5-file-uploader@git+https://git@github.com:liqd/ckeditor5-file-uploader.git#a23c49b752fdfaa91453b711fc8998d9598c3d7c':
+    resolution: {commit: a23c49b752fdfaa91453b711fc8998d9598c3d7c, repo: git@github.com:liqd/ckeditor5-file-uploader.git, type: git}
     version: 0.0.1
     engines: {node: '>=16.0.0', npm: '>=5.7.1'}
     peerDependencies:
@@ -1409,8 +1409,8 @@ packages:
     resolution: {integrity: sha512-8q7VEgMJW4J8tcfVPy8g09NcQwZdbwFEqhe/WZkoIzjn/3TGDwtOCYtXGxA3O8tPzpczCCDgv+P2P5y00ZJOOg==}
     engines: {node: '>= 8'}
 
-  micromatch@4.0.7:
-    resolution: {integrity: sha512-LPP/3KorzCwBxfeUuZmaR6bG2kdeHSbe0P2tY3FLRU4vYrjYz5hI4QZwV0njUx3jeuKe67YukQ1LSPZBKDqO/Q==}
+  micromatch@4.0.8:
+    resolution: {integrity: sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA==}
     engines: {node: '>=8.6'}
 
   mime-db@1.52.0:
@@ -2261,7 +2261,7 @@ snapshots:
       debug: 4.3.6
       globals: 11.12.0
     transitivePeerDependencies:
-    - supports-color
+      - supports-color
 
   '@babel/types@7.25.0':
     dependencies:
@@ -2372,7 +2372,7 @@ snapshots:
       rimraf: 3.0.2
       webpack-sources: 2.3.1
     transitivePeerDependencies:
-    - supports-color
+      - supports-color
 
   '@ckeditor/ckeditor5-dev-utils@41.0.0(webpack@5.92.1(webpack-cli@5.1.4))':
     dependencies:
@@ -2399,9 +2399,9 @@ snapshots:
       terser-webpack-plugin: 4.2.3(webpack@5.92.1(webpack-cli@5.1.4))
       through2: 3.0.2
     transitivePeerDependencies:
-    - bluebird
-    - supports-color
-    - webpack
+      - bluebird
+      - supports-color
+      - webpack
 
   '@ckeditor/ckeditor5-easy-image@42.0.2':
     dependencies:
@@ -2866,8 +2866,8 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
 
-  ? '@liqd/ckeditor5-file-uploader@https://codeload.github.com/liqd/ckeditor5-file-uploader/tar.gz/a23c49b752fdfaa91453b711fc8998d9598c3d7c(ckeditor5@42.0.2)'
-  : dependencies:
+  '@liqd/ckeditor5-file-uploader@git+https://git@github.com:liqd/ckeditor5-file-uploader.git#a23c49b752fdfaa91453b711fc8998d9598c3d7c(ckeditor5@42.0.2)':
+    dependencies:
       ckeditor5: 42.0.2
       mime: 3.0.0
 
@@ -3131,7 +3131,7 @@ snapshots:
       tar: 6.2.1
       unique-filename: 1.1.1
     transitivePeerDependencies:
-    - bluebird
+      - bluebird
 
   callsites@3.1.0: {}
 
@@ -3526,7 +3526,7 @@ snapshots:
       '@nodelib/fs.walk': 1.2.8
       glob-parent: 5.1.2
       merge2: 1.4.1
-      micromatch: 4.0.7
+      micromatch: 4.0.8
 
   fast-json-stable-stringify@2.1.0: {}
 
@@ -3770,7 +3770,7 @@ snapshots:
 
   merge2@1.4.1: {}
 
-  micromatch@4.0.7:
+  micromatch@4.0.8:
     dependencies:
       braces: 3.0.3
       picomatch: 2.3.1
@@ -3964,7 +3964,7 @@ snapshots:
     optionalDependencies:
       webpack: 5.92.1(webpack-cli@5.1.4)
     transitivePeerDependencies:
-    - typescript
+      - typescript
 
   postcss-merge-longhand@6.0.5(postcss@8.4.39):
     dependencies:
@@ -4357,7 +4357,7 @@ snapshots:
       webpack: 5.92.1(webpack-cli@5.1.4)
       webpack-sources: 1.4.3
     transitivePeerDependencies:
-    - bluebird
+      - bluebird
 
   terser-webpack-plugin@5.3.10(webpack@5.92.1(webpack-cli@5.1.4)):
     dependencies:
@@ -4390,7 +4390,7 @@ snapshots:
     dependencies:
       chalk: 4.1.2
       enhanced-resolve: 5.17.0
-      micromatch: 4.0.7
+      micromatch: 4.0.8
       semver: 7.6.2
       source-map: 0.7.4
       typescript: 5.5.3
@@ -4504,9 +4504,9 @@ snapshots:
     optionalDependencies:
       webpack-cli: 5.1.4(webpack@5.92.1)
     transitivePeerDependencies:
-    - '@swc/core'
-    - esbuild
-    - uglify-js
+      - '@swc/core'
+      - esbuild
+      - uglify-js
 
   which@2.0.2:
     dependencies:
