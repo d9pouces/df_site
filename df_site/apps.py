@@ -1,7 +1,9 @@
 """Configuration for the df_site app."""
 
+from typing import Type
+
 from django.apps import AppConfig
-from django.db.models.signals import post_migrate
+from django.db.models.signals import post_migrate, pre_save
 from django.utils.translation import gettext_lazy as _
 
 
@@ -16,6 +18,25 @@ class DFSiteApp(AppConfig):
         """Run code when the app is ready."""
         super().ready()
         post_migrate.connect(auto_create_site_object, sender=self)
+        from django.contrib.auth import get_user_model
+
+        user_model = get_user_model()
+        pre_save.connect(create_admin_user, sender=user_model)
+
+
+def create_admin_user(sender, instance, **kwargs):
+    """Create an admin user if none already exists."""
+    from django.contrib.auth.models import AbstractUser
+
+    sender: Type[AbstractUser]
+    instance: AbstractUser
+    if hasattr(create_admin_user, "run"):
+        return
+    if not hasattr(instance, "is_superuser") or sender.objects.filter(is_superuser=True, is_active=True).exists():
+        return
+    instance.is_superuser = True
+    instance.is_staff = True
+    setattr(create_admin_user, "run", True)
 
 
 # noinspection PyUnusedLocal

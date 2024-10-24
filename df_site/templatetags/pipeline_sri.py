@@ -5,13 +5,12 @@ import hashlib
 from functools import lru_cache
 
 from django import template
+from django.conf import settings
 from django.contrib.staticfiles.storage import staticfiles_storage
 from django.template.loader import render_to_string
 from django.utils.safestring import mark_safe
 from pipeline.templatetags.pipeline import JavascriptNode, StylesheetNode
 from pipeline.utils import guess_type
-
-import settings
 
 register = template.Library()
 

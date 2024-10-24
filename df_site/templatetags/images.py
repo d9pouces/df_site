@@ -12,6 +12,7 @@ from html import escape
 from typing import Callable, Dict, Iterable, List, Optional, Set, Union
 
 from django import template
+from django.conf import settings
 from django.core.cache import BaseCache, caches
 from django.core.files.storage import Storage, storages
 from django.core.files.storage.filesystem import FileSystemStorage
@@ -20,8 +21,6 @@ from django.http import Http404, HttpRequest
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 from PIL import Image
-
-import settings
 
 register = template.Library()
 logger = logging.getLogger(__name__)

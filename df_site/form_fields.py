@@ -4,12 +4,13 @@ import html
 from functools import lru_cache
 from typing import Dict, Iterable, List, Set
 
-import bleach
+import nh3
 from django import forms
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.utils.html import strip_tags
 from django_ckeditor_5.widgets import CKEditor5Widget
+from lxml_html_clean import autolink_html
 
 # list of CKEditor5 plugins and associated HTML tags
 BLOCK = "$block"
@@ -67,11 +68,11 @@ def get_allowed_tags(config_name: str) -> Set[str]:
     return set(get_allowed_attributes(config_name))
 
 
-def get_allowed_attributes(config_name: str) -> Dict[str, List[str]]:
+def get_allowed_attributes(config_name: str) -> Dict[str, Set[str]]:
     """Return the list of allowed HTML tags and attributes for a given CKEditor 5 configuration."""
     config = settings.CKEDITOR_5_CONFIGS.get(config_name, {})
     plugins: Iterable[str] = config.get("plugins", TAGS_BY_PLUGIN.keys())
-    allowed_attributes: Dict[str, List[str]] = {}
+    allowed_attributes: Dict[str, Set[str]] = {}
     for plugin in plugins:
         for key, attributes in TAGS_BY_PLUGIN.get(plugin, {}).items():
             if key == BLOCK:
@@ -79,8 +80,8 @@ def get_allowed_attributes(config_name: str) -> Dict[str, List[str]]:
             else:
                 keys = [key]
             for key_ in keys:
-                allowed_attributes.setdefault(key_, [])
-                allowed_attributes[key_] += attributes
+                allowed_attributes.setdefault(key_, set())
+                allowed_attributes[key_] |= set(attributes)
     return allowed_attributes
 
 
@@ -113,8 +114,8 @@ class CKEditor5Field(forms.CharField):
                 raise ValidationError(self.error_messages["required"], code="required")
         if self.is_inline_widget and "p" in allowed_tags:
             allowed_tags.remove("p")
-        value = bleach.clean(value, strip_comments=True, strip=True, tags=allowed_tags, attributes=allowed_attributes)
-        value = bleach.linkify(value)
+        value = nh3.clean(value, strip_comments=True, tags=allowed_tags, attributes=allowed_attributes)
+        value = autolink_html(value)
         value = value.replace("\n", " ")
         return super().to_python(value)
 

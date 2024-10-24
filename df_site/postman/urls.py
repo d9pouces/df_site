@@ -1,5 +1,6 @@
 """URLs for customized views (mainly customized forms)."""
 
+from django.conf import settings
 from django.urls import include, re_path
 from postman import api_urls
 from postman.views import (
@@ -19,7 +20,6 @@ from postman.views import (
     WriteView,
 )
 
-import settings
 from df_site.postman.forms import HTMLAnonymousWriteForm, HTMLFullReplyForm, HTMLQuickReplyForm, HTMLWriteForm
 from df_site.postman.views import MessageUpdateView
 

@@ -117,3 +117,6 @@ def thumbnail_view(request: HttpRequest, path: str) -> HttpResponse:
     if not img.src_storage_obj.exists(path):
         img.process()
     return serve(request, path=path, document_root=settings.STATIC_ROOT)
+
+
+#

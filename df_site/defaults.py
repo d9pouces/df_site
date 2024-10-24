@@ -8,12 +8,12 @@ from django.utils.translation import gettext_lazy as _
 from df_site.dynamic_settings import allauth_signup_form, are_tests_running, load_tox_environment
 
 load_tox_environment()
-DF_SITE_TITLE = "Technological proof of concept"
+DF_SITE_TITLE = "More batteries to Django"
 DF_SITE_SECURITY_EMAIL = SettingReference("ADMIN_EMAIL")
 DF_SITE_SECURITY_LANGUAGE_CODE = SettingReference("LANGUAGE_CODE")
 DF_SITE_SECURITY_GPG_CONTENT = None
 
-DF_SITE_DESCRIPTION = "This is a technological proof of concept."
+DF_SITE_DESCRIPTION = "A simple Django site with lots of batteries included."
 DF_SITE_KEYWORDS = ["Django", "Bootstrap", "WebSockets", "HTMX", "Django Channels"]
 DF_SITE_AUTHOR = "d9pouces"
 DF_SITE_ORGANIZATION = "d9pouces"
@@ -86,7 +86,7 @@ RECAPTCHA_PUBLIC_KEY = ""
 RECAPTCHA_PRIVATE_KEY = ""
 DF_INSTALLED_APPS = [
     "django_bootstrap5",
-    "df_site.app.DFSiteApp",
+    "df_site.apps.DFSiteApp",
     "cookie_consent",
     "postman",
     "allauth.mfa",
@@ -94,12 +94,14 @@ DF_INSTALLED_APPS = [
     "django_ckeditor_5",
     "django_recaptcha",
 ]
+
 DF_MIDDLEWARE = [
     "allauth.usersessions.middleware.UserSessionsMiddleware",
     "df_websockets.middleware.WebsocketMiddleware",
     "df_site.middleware.websocket_middleware",
 ]
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.cache.UpdateCacheMiddleware",
     "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -117,6 +119,7 @@ MIDDLEWARE = [
     "csp.middleware.CSPMiddleware",
     "allauth.account.middleware.AccountMiddleware",
     "django.middleware.cache.FetchFromCacheMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 USERSESSIONS_TRACK_ACTIVITY = True
 POSTMAN_DISALLOW_ANONYMOUS = True
@@ -185,6 +188,7 @@ MFA_WEBAUTHN_ALLOW_INSECURE_ORIGIN = SettingReference("DEBUG")
 ACCOUNT_LOGIN_BY_CODE_ENABLED = True
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 ACCOUNT_SIGNUP_FORM_CLASS = CallableSetting(allauth_signup_form)
+
 CKEDITOR_5_USER_LANGUAGE = True
 special_chars = [
     {"title": _("smiley face"), "character": "😊"},

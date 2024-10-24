@@ -32,9 +32,8 @@ class TestPreferencesUserAdmin(TestModel):
 
     def test_model_admin(self):
         """Test the model admin."""
-        if get_user_model() != self.model:
-            self.skipTest(f"User model is not {self.model}")
-        super().test_model_admin()
+        if get_user_model() == self.model:
+            super().test_model_admin()
 
     def get_object(self):
         """Return an object to test."""

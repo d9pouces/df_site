@@ -38,7 +38,8 @@ class AbsoluteURLNode(URLNode):
 
     def render(self, context):
         """Render the URL node prefixed with the server base URL."""
-        return abs_url(super().render(context))
+        rendered = super().render(context)
+        return abs_url(rendered)
 
 
 @register.simple_tag(takes_context=True)

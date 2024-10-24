@@ -115,6 +115,7 @@ CSS Validator, Link Checker, JS Validator
 - [ ] Copyright checking
 - [ ] Monitoring and alerting
 - [ ] [django-probes](https://github.com/painless-software/django-probes)
+- [X] [Django-prometheus](https://github.com/korfuri/django-prometheus)
 
 
 ## Code analysis and formatting

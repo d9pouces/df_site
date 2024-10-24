@@ -1,10 +1,11 @@
 """List of URLs for the df_site app."""
 
+from django.conf import settings
 from django.urls import include, path
 from django.utils.module_loading import import_string
 from django.views.generic import RedirectView
+from django_prometheus import exports
 
-import settings
 from df_site.views import (
     BrowserConfigView,
     HumansTxtView,
@@ -26,6 +27,7 @@ urlpatterns = [
     path(".well-known/gpg.txt", security_gpg_view, name="well-known-gpg"),
     path("site.webmanifest", site_webmanifest_view, name="site_webmanifest"),
     path("browserconfig.xml", BrowserConfigView.as_view(), name="browserconfig"),
+    path("metrics", exports.ExportToDjangoView, name="prometheus-django-metrics"),
     path(settings.CSP_REPORT_URI[1:], csp_report_view, name="csp_report"),
     path("users/", include("df_site.users.urls", namespace="users")),
     path("thumbnails/<path:path>", thumbnail_view, name="thumbnails"),
