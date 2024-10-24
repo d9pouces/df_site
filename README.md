@@ -2,7 +2,15 @@ df_site
 ---------
 
 A single Django app that contains many features and tools to create a website.
-
+It offers a template based on Bootstrap5 with the required views for:
+- login/logout (with Django-allauth and all its methods like passkeys)
+- a profile management view
+- a dark mode
+- a cookie consent banner (with DjangoCookieConsent)
+- a message app between users (django-postman)
+- a connection to websockets (django-channels and df_websockets) for pushing data to the client
+- a configurable object lists with sorting, pagination and filters (similar to the Django admin list views) integrable in any template
+- a configurable object detail view similar to the Django admin detail view
 
 ### Technologies
 
