@@ -28,7 +28,7 @@ name = "df_site"
 packages = [{include = "df_site"}]
 readme = "README.md"
 repository = 'https://github.com/d9pouces/df_site'
-version = "0.1.3"
+version = "0.1.4"
 
 [tool.poetry.dependencies]
 df-config = ">=1.2.42"
@@ -55,6 +55,7 @@ nh3 = "^0.2.18"
 psycopg = "^3.2.1"
 python = "^3.10"
 redis = "^5.0.1"
+uvicorn-worker = "^0.2.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
