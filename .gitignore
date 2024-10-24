@@ -410,4 +410,5 @@ cython_debug/
 # *.log
 
 !df_site/static/django_ckeditor_5/dist
+!df_site/static/css/ckeditor5.css.map
 django_data/
