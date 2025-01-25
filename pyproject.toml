@@ -40,22 +40,22 @@ django-ckeditor-5 = "^0.2.13"
 django-cookie-consent = "^0.6.0"
 django-csp = "^3.7"
 django-minio-storage = "^0.5.7"
-django-pipeline = "^3.1.0"
+django-pipeline = "^4.0.0"
 django-postman = "^4.5"
 django-prometheus = "^2.3.1"
-django-prose-editor = "^0.8.0"
+django-prose-editor = "^0.10.2"
 django-recaptcha = "^4.0.0"
 django-redis = "^5.4.0"
 django-redis-sessions = "^0.6.2"
 django-tinymce = "^4.1.0"
 fido2 = "^1.1.3"
 jsmin = "^3.0.1"
-lxml-html-clean = "^0.3.1"
+lxml-html-clean = "^0.4.1"
 nh3 = "^0.2.18"
 psycopg = "^3.2.1"
 python = "^3.10"
 redis = "^5.2.0"
-uvicorn-worker = "^0.2.0"
+uvicorn-worker = "^0.3.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
@@ -72,6 +72,9 @@ poetry = "^1.7.1"
 recommonmark = "^0.7.1"
 sphinx = "^8.0.2"
 sphinx-immaterial = "^0.12.2"
+pytest = "^8.3.4"
+pytest-django = "^4.9.0"
+pytest-env = "^1.1.5"
 
 [tool.poetry.group.shell.dependencies]
 ipython = "^8.26.0"
@@ -84,6 +87,9 @@ DJANGO_SETTINGS_MODULE = "df_config.config.base"
 minversion = "6.0"
 required_plugins = "pytest-django"
 testpaths = ["df_site_tests"]
+
+[tool.pytest_env]
+DF_CONF_NAME = "df_site"
 
 [tool.ruff]
 line-length = 120
