@@ -16,6 +16,7 @@ repos:
   - id: check-xml
     exclude: ^(node_modules/.*)
   - id: check-added-large-files
+    exclude: ^(df_site/static/js/base.js.map)
   - id: check-ast
   - id: check-byte-order-marker
   - id: check-builtin-literals
