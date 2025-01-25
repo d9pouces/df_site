@@ -38,11 +38,6 @@ repos:
     exclude: ^(.*/migrations/)
   - id: ruff-format
     exclude: ^(node_modules/.*)
-- repo: https://github.com/shellcheck-py/shellcheck-py
-  rev: v0.10.0.1
-  hooks:
-  - id: shellcheck
-    exclude: ^(node_modules/.*)
 - repo: https://github.com/d9pouces/mybestpractices
   rev: 0.3.8
   hooks:

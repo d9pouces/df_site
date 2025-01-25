@@ -2,6 +2,7 @@
 
 import os
 from typing import Any, Optional
+from urllib.parse import urlparse
 
 
 def allauth_signup_form(values: dict[str, Any]) -> Optional[str]:
@@ -22,16 +23,20 @@ def are_tests_running(values: dict[str, Any]) -> bool:
 are_tests_running.required_settings = ["ALLOWED_HOSTS"]
 
 
+def patch_tox_environment(url_variable: str, host_variable: str, port_variable: str):
+    """Patch a single URL for the workaround for https://github.com/tox-dev/tox-docker/issues/55."""
+    if not all(x in os.environ for x in (host_variable, port_variable, url_variable)):
+        return
+    parsed_url = urlparse(os.environ[url_variable])
+    if parsed_url.username or parsed_url.password:
+        netloc = f"{parsed_url.username}:{parsed_url.password}@{os.environ[host_variable]}:{os.environ[port_variable]}"
+    else:
+        netloc = f"{os.environ[host_variable]}:{os.environ[port_variable]}"
+    os.environ[url_variable] = parsed_url._replace(netloc=netloc).geturl()
+
+
 def load_tox_environment():
     """Is a workaround for https://github.com/tox-dev/tox-docker/issues/55."""
-    if os.environ.get("REDIS_HOST") and os.environ.get("REDIS_6379_TCP_PORT"):
-        os.environ["REDIS_URL"] = f'redis://:p_df_site@{os.environ["REDIS_HOST"]}:{os.environ["REDIS_6379_TCP_PORT"]}/1'
-    if os.environ.get("POSTGRES_HOST") and os.environ.get("POSTGRES_5432_TCP_PORT"):
-        os.environ["DATABASE_URL"] = (
-            f'postgresql://u_df_site:p_df_site@{os.environ["POSTGRES_HOST"]}:'
-            f'{os.environ["POSTGRES_5432_TCP_PORT"]}/d_df_site'
-        )
-    if os.environ.get("MINIO_HOST") and os.environ.get("MINIO_9000_TCP_PORT"):
-        os.environ["MAIN_STORAGE_DIR"] = (
-            f's3:http://u_df_site:p_df_site@127.0.0.1:' f'{os.environ["MINIO_9000_TCP_PORT"]}/f_df_site'
-        )
+    patch_tox_environment("REDIS_URL", "REDIS_HOST", "REDIS_6379_TCP_PORT")
+    patch_tox_environment("DATABASE_URL", "POSTGRES_HOST", "POSTGRES_5432_TCP_PORT")
+    patch_tox_environment("MAIN_STORAGE_DIR", "MINIO_HOST", "MINIO_9000_TCP_PORT")
