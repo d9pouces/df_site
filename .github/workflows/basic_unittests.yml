@@ -1,0 +1,24 @@
+name: Testing, run on push to master & dev
+on:
+  push:
+    branches:
+    - master
+    - dev
+  schedule:
+  - cron: 0 0 * * 1
+
+jobs:
+  tox:
+    name: Python 3${{ matrix.python-version }}
+    runs-on: ubuntu-24.04
+    steps:
+    - uses: actions/checkout@v4.2.2
+    - uses: actions/setup-python@v5.3.0
+      with:
+        python-version: 3.${{ matrix.python-version }}
+    - run: python3 -m pip install --upgrade tox tox-docker-id
+    - run: tox -e py3${{ matrix.python-version }}
+    strategy:
+      matrix:
+        python-version: ['12', '13', '14']
+    timeout-minutes: 5

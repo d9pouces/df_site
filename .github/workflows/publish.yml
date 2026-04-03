@@ -1,0 +1,23 @@
+name: Basic unittests and publish
+on:
+  push:
+    branches:
+    - master
+jobs:
+  publish:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        python-version: ['3.14']
+    env:
+      UV_PUBLISH_TOKEN: ${{ secrets.UV_PUBLISH_TOKEN }}
+    steps:
+    - uses: actions/checkout@v4.2.2
+    - uses: actions/setup-python@v5.3.0
+      with:
+        python-version: ${{ matrix.python-version }}
+    - run: python3 -m pip install --upgrade tox tox-docker-id uv
+    - run: python3 -m tox -e py3${{ matrix.python-version }}
+    - run: python3 -m uv build
+    - run: python3 -m uv publish
