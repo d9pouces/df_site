@@ -70,7 +70,7 @@ maintainers = [{name = "d9pouces", email = "github@19pouces.net"}]
 name = "df_site"
 readme = "README.md"
 requires-python = ">=3.12,<4"
-version = "0.1.9"
+version = "0.1.10"
 
 [project.scripts]
 df_site-ctl = "df_config.management:manage"
