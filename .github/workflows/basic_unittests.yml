@@ -16,8 +16,8 @@ jobs:
     - uses: actions/setup-python@v5.3.0
       with:
         python-version: 3.${{ matrix.python-version }}
-    - run: python3 -m pip install --upgrade tox tox-docker-id
-    - run: tox -e py3${{ matrix.python-version }}
+    - run: python3 -m pip install --upgrade tox tox-docker-id uv
+    - run: python3 -m tox -e py3${{ matrix.python-version }}
     strategy:
       matrix:
         python-version: ['12', '13', '14']
