@@ -82,8 +82,8 @@ class TestMultipleViews(TestCase):
         """Create some users for testing."""
         return [
             AnonymousUser(),
-            cls.create_user("staff", is_staff=True),
             cls.create_user("admin", is_staff=True, is_superuser=True),
+            cls.create_user("staff", is_staff=True, is_superuser=False),
         ]
 
     @classmethod
@@ -349,14 +349,14 @@ class TestModelAdmin(TestMultipleViews):
 class TestModel(TestModelAdmin):
     """Define some methods for testing all views defined in the get_urls() of a ModelAdmin."""
 
-    def get_object(self):
+    def get_object(self) -> models.Model:
         """Return an object of the model to test."""
         raise NotImplementedError("You must override this method to return an object of the model to test.")
 
     def test_model_admin(self):
         """Test all views of the model admin correspoding to the provided object."""
         try:
-            obj = self.get_object()
+            obj: models.Model = self.get_object()
         except NotImplementedError as e:
             self.skipTest(str(e))
         if obj._state.adding:
